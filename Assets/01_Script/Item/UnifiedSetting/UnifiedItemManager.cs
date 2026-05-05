@@ -356,7 +356,19 @@ public class UnifiedItemManager : NetworkBehaviour
     [ClientRpc] void RpcOnFieldRemoved() => OnFieldRemovedLocal();
 
     private void OnWeaponRemovedLocal() => Debug.Log("무기 아이템 해제됨.");
-    private void OnActiveUsedLocal() => Debug.Log("액티브 아이템 사용 시작.");
+    
+    private void OnActiveUsedLocal()
+    {
+        Debug.Log("액티브 아이템 사용 시작.");
+
+        // ★ 추가
+        if (isLocalPlayer)
+        {
+            var uiManager = FindObjectOfType<InGameUIManger>();
+            uiManager?.HideActiveItem();
+    }
+
+    }
     private void OnActiveRemovedLocal() => Debug.Log("액티브 아이템 해제됨.");
     private void OnPassiveActivatedLocal() => Debug.Log("패시브 아이템 발동.");
     private void OnPassiveRemovedLocal() => Debug.Log("패시브 아이템 해제됨.");

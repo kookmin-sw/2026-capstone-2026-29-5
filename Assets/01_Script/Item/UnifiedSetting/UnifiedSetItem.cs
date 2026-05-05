@@ -211,6 +211,24 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
                 if (activeAsset != null) legacy.activeAvailable = activeAsset.AvailableTime;
                 legacy.GetActive();
             }
+
+            NetworkIdentity userIdentity = user.GetComponent<NetworkIdentity>();
+
+            Debug.Log($"[UnifiedSetItem] isServer={isServer}, isClient={isClient}");
+            Debug.Log($"[UnifiedSetItem] connectionToClient={userIdentity.connectionToClient}");
+
+            if (userIdentity.connectionToClient is LocalConnectionToClient)
+            {
+                // 호스트 경로 — 직접 UI 호출
+                var activeAssetLoaded = Resources.Load<ScriptableObject>($"Items/{itemAsset.name}") as IActive;
+                var uiManager = FindObjectOfType<InGameUIManger>();
+                uiManager?.ShowActiveItem(activeAssetLoaded?.UISprite);
+            }
+            else
+            {
+                // 일반 클라이언트 경로
+                RpcOnActiveEquipped(userIdentity.connectionToClient, itemAsset.name);
+            }
         }
         else if (item.CompareTag("Passive"))
         {
@@ -263,6 +281,18 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
     private void RpcOnWeaponEquipped(GameObject user)
     {
         Debug.Log("아이템 장착!");
+    }
+
+    // 액티브 아이템 획득 시
+    [TargetRpc]
+    private void RpcOnActiveEquipped(NetworkConnection target, string itemName)
+    {
+        // 클라이언트에서 직접 에셋을 로드
+        var activeAsset = Resources.Load<ScriptableObject>($"Items/{itemName}") as IActive;
+        Sprite sprite = activeAsset?.UISprite;
+
+        var uiManager = FindObjectOfType<InGameUIManger>();
+        uiManager?.ShowActiveItem(sprite);
     }
 
     // -----------------------------

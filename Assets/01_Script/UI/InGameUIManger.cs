@@ -31,6 +31,8 @@ public class InGameUIManger : MonoBehaviour
     public Image weaponItemIcon; // 무기 아이콘 - 계속 변경됨
     public Image weaponItemTimerFill; // 지속시간 fill
     public Sprite defaultWeaponSprite; // 기본 주무기 이미지
+    public Image activeItemIcon;
+    public Sprite defaultActiveSprite; // 빈 슬롯 이미지
 
     [Header("HealthBar Anim")]
     public float delayTime = 0.5f; // 닳기 시작까지 대기 시간
@@ -42,6 +44,7 @@ public class InGameUIManger : MonoBehaviour
     private StarterAssetsInputs inputs;
     private PlayerInput playerInput;
     private Coroutine weaponItemCoroutine;
+    private Coroutine activeItemCoroutine;
 
     // 게임 매니저에서 RegisterPlayer에서 호출 - p1, p2 구분하여 체력바 UI 등록
     public void RegisterHealthBar(int playerIndex, float initialHealth) 
@@ -175,6 +178,21 @@ public class InGameUIManger : MonoBehaviour
             weaponItemIcon.sprite = itemSprite; 
         
         weaponItemCoroutine = StartCoroutine(WeaponItemTimerCoroutine(duration));
+    }
+
+    // 액티브 아이템 획득 시 호출
+    public void ShowActiveItem(Sprite itemSprite)
+    {
+        if (activeItemIcon == null) return;
+        
+        activeItemIcon.sprite = itemSprite != null ? itemSprite : defaultActiveSprite;
+    }
+
+    // 액티브 아이템 사용 시 호출
+    public void HideActiveItem()
+    {
+        if (activeItemIcon == null) return;
+        activeItemIcon.sprite = defaultActiveSprite;
     }
 
     // 아이템 타이머 코루틴
