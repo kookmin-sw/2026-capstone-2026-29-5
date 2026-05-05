@@ -217,9 +217,13 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
             IPassive passiveAsset = itemAsset as IPassive;
             if (unified != null)
             {
+                // ★ 이전 패시브 강제 해제 추가
+                if (unified.HasPassive() || unified.IsPassiveRunning())
+                    unified.ForceExpirePassive();
+
                 unified.passive = passiveAsset;
                 if (passiveAsset != null) unified.passiveAvailable = passiveAsset.AvailableTime;
-                unified.GetPassive();  // 플래그는 마지막에 (Update에서 자동 발동 트리거)
+                unified.GetPassive();
             }
             else
             {
@@ -255,7 +259,6 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
         // 필드 아이템 오브젝트 제거
         NetworkServer.Destroy(item);
     }
-
     [ClientRpc]
     private void RpcOnWeaponEquipped(GameObject user)
     {

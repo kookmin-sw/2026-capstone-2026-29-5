@@ -173,9 +173,77 @@ public class UnifiedItemManager : NetworkBehaviour
 
     public void GetWeapon() => hasWeapon = true;
     public void GetActive() => hasActive = true;
-    public void GetPassive() => hasPassive = true;
+    public void GetPassive()
+    {
+        // 기존 패시브가 있으면 먼저 정리
+        if (hasPassive || passiveUsed)
+        {
+            var amp = GetComponent<DamageAmplifier>();
+            if (amp != null)
+                amp.OnAllStacksConsumed -= OnPassiveEarlyExpired;
+
+            if (passiveRoutine != null)
+            {
+                StopCoroutine(passiveRoutine);
+                passiveRoutine = null;
+            }
+        }
+
+        hasPassive = true;
+
+        var ampNew = GetComponent<DamageAmplifier>();
+        if (ampNew != null)
+            ampNew.OnAllStacksConsumed += OnPassiveEarlyExpired;
+
+    }
     public void GetField() => hasField = true;
 
+    private void OnPassiveEarlyExpired()
+    {
+        // 콜백 해제 (중복 방지)
+        var amp = GetComponent<DamageAmplifier>();
+        if (amp != null)
+            amp.OnAllStacksConsumed -= OnPassiveEarlyExpired;
+
+        if (!passiveUsed) return;
+
+        // 타이머 만료와 동일한 처리
+        if (passiveRoutine != null)
+        {
+            StopCoroutine(passiveRoutine);
+            passiveRoutine = null;
+            passive?.OnDeactivate(gameObject);
+        }
+
+        passiveUsed = false;
+        hasPassive = false;
+        passive = null;
+        passiveTimer = 0;
+        passiveAvailable = 0;
+        NotifyPassiveRemoved();
+    }
+
+    public void ForceExpirePassive()
+    {
+        var amp = GetComponent<DamageAmplifier>();
+        if (amp != null)
+            amp.OnAllStacksConsumed -= OnPassiveEarlyExpired;
+
+        if (passiveRoutine != null)
+        {
+            StopCoroutine(passiveRoutine);
+            passiveRoutine = null;
+        }
+
+        passive?.OnDeactivate(gameObject); // ★ 이전 패시브 정리 (이속 원복 등)
+
+        passiveUsed = false;
+        hasPassive = false;
+        passiveTimer = 0;
+        passiveAvailable = 0;
+        // passive 필드는 호출부에서 새 값으로 교체
+    }
+    
     // -----------------------------
     // 액티브 사용 요청 (입력 → 실행)
     // -----------------------------

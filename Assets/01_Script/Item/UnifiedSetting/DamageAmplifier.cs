@@ -8,6 +8,8 @@ using UnityEngine;
 */
 public class DamageAmplifier : MonoBehaviour
 {
+    public event System.Action OnAllStacksConsumed;
+
     private class Stack
     {
         public readonly object Owner;    // 스택을 걸어둔 플레이어
@@ -79,6 +81,10 @@ public class DamageAmplifier : MonoBehaviour
             if (_stacks[i].RemainingHits <= 0)
                 _stacks.RemoveAt(i);
         }
+
+        // 스택 전부 소모시 알림
+        if (_stacks.Count == 0)
+            OnAllStacksConsumed?.Invoke();
     }
 
     // 특정 owner의 스택이 아직 남아있는지 조회.
