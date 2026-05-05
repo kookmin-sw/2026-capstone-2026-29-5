@@ -121,16 +121,31 @@ public class UnifiedPlayerCombat : MonoBehaviour
     private void OnChargeCanceled(InputAction.CallbackContext context)
     {
         if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
-        if (_model.IsDead || IsAttacking || IsStrongAttacking) return;
+        if (_model.IsDead) return;
 
-        if (context.duration >= strongAttackHoldTime)
+        bool willStrongAttack = _chargeStarted               // ← 여기 추가
+                            && !IsAttacking
+                            && !IsStrongAttacking
+                            && context.duration >= strongAttackHoldTime;
+
+
+
+        if (willStrongAttack)
         {
             _model.RequestStrongAttack();
+            // IsCharging은 StrongAttack 상태 진입 시 StateMachineBehaviour가 false로 처리.
+            // 여기선 모델/이펙트만 정리하고 Animator 파라미터는 건드리지 않는다.
+            _chargeStarted = false;
+            _model.RequestSetCharging(false);
+            if (_view != null) _view.ClearChargeEffectsOnly();
+        }
+        else
+        {
+            _chargeStarted = false;
+            _model.RequestSetCharging(false);
+            if (_view != null) _view.UpdateChargeEffect(false, false);
         }
 
-        _chargeStarted = false;
-        _model.RequestSetCharging(false);
-        if (_view != null) _view.UpdateChargeEffect(false, false);
         _input.punch = false;
     }
 

@@ -166,6 +166,8 @@ public class UnifiedCharacterView : MonoBehaviour
     // -------- 차지 이펙트 (Combat이 직접 호출) --------
     public void UpdateChargeEffect(bool isCharging, bool isReady)
     {
+        anim.SetBool("IsCharging", isCharging);
+
         if (!isCharging)
         {
             if (chargingEffect) chargingEffect.SetActive(false);
@@ -185,6 +187,11 @@ public class UnifiedCharacterView : MonoBehaviour
             if (chargingEffect) chargingEffect.SetActive(true);
             if (chargeReadyEffect) chargeReadyEffect.SetActive(false);
         }
+    }
+    public void ClearChargeEffectsOnly()
+    {
+        if (chargingEffect) chargingEffect.SetActive(false);
+        if (chargeReadyEffect) chargeReadyEffect.SetActive(false);
     }
 
     public void PlayStrongAttackEffect() => anim.SetTrigger("DoStrongAttack");
