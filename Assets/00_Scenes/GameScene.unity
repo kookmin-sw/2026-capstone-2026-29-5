@@ -2026,7 +2026,7 @@ MonoBehaviour:
   gameOverText: {fileID: 1329035649}
   TitleButton: {fileID: 894446949}
   titleSceneName: TitleScene
-  remainingTime: 180
+  remainingTime: 999
   spawnPoints:
   - {fileID: 1134415153}
   - {fileID: 1393651244}
