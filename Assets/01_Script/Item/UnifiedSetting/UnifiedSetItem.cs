@@ -96,27 +96,27 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
         }
         else if (item.CompareTag("Passive"))
         {
+
             IPassive passiveAsset = itemAsset as IPassive;
+            //레거시 코드. 수정 후 삭제 요망.
+            /*
             im.passive = passiveAsset;
             if (passiveAsset != null) im.passiveAvailable = passiveAsset.AvailableTime;
             im.GetPassive();  // 플래그는 마지막에 세팅 (Update에서 자동 발동 트리거)
+            */
+            im.GetPassive(passiveAsset, passiveAsset.AvailableTime);
         }
         else if (item.CompareTag("Field"))
         {
-            IField fieldAsset = itemAsset as IField;
-            if (fieldAsset == null)
-            {
-                Debug.LogError("[UnifiedSetItem] Field 태그인데 itemAsset이 IField가 아님.");
-            }
-            else
-            {
-                im.field = fieldAsset;
-                im.fieldAvailable = fieldAsset.AvailableTime;
-                im.GetField();  // 마지막에 플래그 세팅 → Update가 자동 발동
-            }
+            Debug.Log("필드 아이템 인식");
+            IField field = itemAsset as IField;
+
+            //오브젝트 소환만 하는 것으로 변경. 그 이후 생명주기 관리는 오브젝트에서 전담.
+            field.SummonObj();
         }
     }
 
+    //이전 스크립트르 적용. 더 이상 건드리지 않기에 수정 안하는 편이 좋음.
     private void ApplyToLegacy(GameObject user, GameObject item, ItemManager im)
     {
         if (item.CompareTag("Weapon"))
@@ -150,6 +150,12 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
         }
         else if (item.CompareTag("Field"))
         {
+            Debug.Log("필드 아이템 인식");
+            IField field = itemAsset as IField;
+            field.SummonObj();
+
+            //필드 아이템 수정중. 수정 성공시 제거.
+            /*
             IField fieldAsset = itemAsset as IField;
             if (fieldAsset == null)
             {
@@ -161,6 +167,7 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
                 im.fieldAvailable = fieldAsset.AvailableTime;
                 im.GetField();
             }
+            */
         }
     }
 
@@ -211,15 +218,43 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
                 if (activeAsset != null) legacy.activeAvailable = activeAsset.AvailableTime;
                 legacy.GetActive();
             }
+
+            NetworkIdentity userIdentity = user.GetComponent<NetworkIdentity>();
+
+            Debug.Log($"[UnifiedSetItem] isServer={isServer}, isClient={isClient}");
+            Debug.Log($"[UnifiedSetItem] connectionToClient={userIdentity.connectionToClient}");
+
+            if (userIdentity.connectionToClient is LocalConnectionToClient)
+            {
+                // 호스트 경로 — 직접 UI 호출
+                var activeAssetLoaded = Resources.Load<ScriptableObject>($"Items/{itemAsset.name}") as IActive;
+                var uiManager = FindObjectOfType<InGameUIManger>();
+                uiManager?.ShowActiveItem(activeAssetLoaded?.UISprite);
+            }
+            else
+            {
+                // 일반 클라이언트 경로
+                RpcOnActiveEquipped(userIdentity.connectionToClient, itemAsset.name);
+            }
         }
         else if (item.CompareTag("Passive"))
         {
             IPassive passiveAsset = itemAsset as IPassive;
+            
             if (unified != null)
             {
+                /*
+                // ★ 이전 패시브 강제 해제 추가
+                if (unified.HasPassive() || unified.IsPassiveRunning())
+                    unified.ForceExpirePassive();
+
                 unified.passive = passiveAsset;
                 if (passiveAsset != null) unified.passiveAvailable = passiveAsset.AvailableTime;
-                unified.GetPassive();  // 플래그는 마지막에 (Update에서 자동 발동 트리거)
+                unified.GetPassive();
+                */
+
+                unified.GetPassive(passiveAsset, passiveAsset.AvailableTime);
+
             }
             else
             {
@@ -230,36 +265,31 @@ public class UnifiedSetItem : NetworkBehaviour, IEquip
         }
         else if (item.CompareTag("Field"))
         {
-            IField fieldAsset = itemAsset as IField;
-            if (fieldAsset == null)
-            {
-                Debug.LogError("[UnifiedSetItem] Field 태그인데 itemAsset이 IField가 아님.");
-            }
-            else
-            {
-                if (unified != null)
-                {
-                    unified.field = fieldAsset;
-                    unified.fieldAvailable = fieldAsset.AvailableTime;
-                    unified.GetField();
-                }
-                else
-                {
-                    legacy.field = fieldAsset;
-                    legacy.fieldAvailable = fieldAsset.AvailableTime;
-                    legacy.GetField();
-                }
-            }
+            IField field = itemAsset as IField;
+
+            //오브젝트 소환만 하는 것으로 변경. 그 이후 생명주기 관리는 오브젝트에서 전담.
+            field.SummonObj();
         }
 
         // 필드 아이템 오브젝트 제거
         NetworkServer.Destroy(item);
     }
-
     [ClientRpc]
     private void RpcOnWeaponEquipped(GameObject user)
     {
         Debug.Log("아이템 장착!");
+    }
+
+    // 액티브 아이템 획득 시
+    [TargetRpc]
+    private void RpcOnActiveEquipped(NetworkConnection target, string itemName)
+    {
+        // 클라이언트에서 직접 에셋을 로드
+        var activeAsset = Resources.Load<ScriptableObject>($"Items/{itemName}") as IActive;
+        Sprite sprite = activeAsset?.UISprite;
+
+        var uiManager = FindObjectOfType<InGameUIManger>();
+        uiManager?.ShowActiveItem(sprite);
     }
 
     // -----------------------------
