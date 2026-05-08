@@ -103,8 +103,7 @@ public class UnifiedItemManager : NetworkBehaviour
                 entry.timer = 0f;
                 entry.routine = StartCoroutine(
                     PassiveRoutineWrapper(entry, entry.passive.Activate(gameObject)));
-                ShowPassiveUILocal(entry);
-                NotifyPassiveActivated();
+                NotifyPassiveActivated(entry);
             }
 
             // 타이머 진행
@@ -115,11 +114,10 @@ public class UnifiedItemManager : NetworkBehaviour
 
                 if (entry.available <= entry.timer)
                 {
-                    HidePassiveUILocal(entry);
+                    NotifyPassiveRemoved(entry);
                     ExpirePassiveEntry(entry);
                     passiveEntries.RemoveAt(i);
                     SyncPassiveCount();
-                    NotifyPassiveRemoved();
                 }
             }
         }
@@ -177,7 +175,7 @@ public class UnifiedItemManager : NetworkBehaviour
         var uiManager = FindObjectOfType<InGameUIManger>();
         if (uiManager == null) return;
 
-        uiManager.ShowPassiveItem(entry.uiId, entry.passive.UISprite, entry.passive.UIType);
+        uiManager.ShowPassiveItem(entry.uiId, entry.passive.UISprite, entry.passive.UIType, entry.available);
     }
 
     private void UpdatePassiveUILocal(Passive entry)
@@ -253,12 +251,11 @@ public class UnifiedItemManager : NetworkBehaviour
     private void OnPassiveEarlyExpired(Passive entry)
     {
         if (!passiveEntries.Contains(entry)) return;
-
-        HidePassiveUILocal(entry);
+        
+        NotifyPassiveRemoved(entry);
         ExpirePassiveEntry(entry);
         passiveEntries.Remove(entry);
         SyncPassiveCount();
-        NotifyPassiveRemoved();
     }
 
     public void ForceExpireAllPassives()
@@ -364,16 +361,35 @@ public void RequestUseActive()
         else if (NetworkServer.active) RpcOnActiveRemoved();
     }
 
-    private void NotifyPassiveActivated()
+    private void NotifyPassiveActivated(Passive entry)
     {
-        if (AuthorityGuard.IsOffline) OnPassiveActivatedLocal();
-        else if (NetworkServer.active) RpcOnPassiveActivated();
+        if (AuthorityGuard.IsOffline)
+        {
+            ShowPassiveUILocal(entry);
+            OnPassiveActivatedLocal();
+            return;
+        }
+
+        if (!NetworkServer.active) return;
+
+        string itemName = (entry.passive as ScriptableObject)?.name;
+        if (string.IsNullOrEmpty(itemName)) return;
+
+        TargetOnPassiveActivated(connectionToClient, entry.uiId, itemName, entry.available, entry.passive.UIType);
     }
 
-    private void NotifyPassiveRemoved()
+    private void NotifyPassiveRemoved(Passive entry)
     {
-        if (AuthorityGuard.IsOffline) OnPassiveRemovedLocal();
-        else if (NetworkServer.active) RpcOnPassiveRemoved();
+        if (AuthorityGuard.IsOffline)
+        {
+            HidePassiveUILocal(entry);
+            OnPassiveRemovedLocal();
+            return;
+        }
+
+        if (!NetworkServer.active) return;
+
+        TargetOnPassiveRemoved(connectionToClient, entry.uiId);
     }
 
     [ClientRpc] void RpcOnWeaponRemoved() => OnWeaponRemovedLocal();
@@ -399,4 +415,25 @@ public void RequestUseActive()
     private void OnActiveRemovedLocal() => Debug.Log("액티브 아이템 해제됨."); 
     private void OnPassiveActivatedLocal() => Debug.Log("패시브 아이템 발동.");
     private void OnPassiveRemovedLocal() => Debug.Log("패시브 아이템 해제됨.");
+
+    [TargetRpc]
+    private void TargetOnPassiveActivated(NetworkConnection target, int uiId, string itemName, float duration, PassiveUIType uiType)
+    {
+        var passiveAsset = Resources.Load<ScriptableObject>($"Items/{itemName}") as IPassive;
+        Sprite sprite = passiveAsset?.UISprite;
+
+        var uiManager = FindObjectOfType<InGameUIManger>();
+        uiManager?.ShowPassiveItem(uiId, sprite, uiType, duration);
+
+        OnPassiveActivatedLocal();
+    }
+
+    [TargetRpc]
+    private void TargetOnPassiveRemoved(NetworkConnection target, int uiId)
+    {
+        var uiManager = FindObjectOfType<InGameUIManger>();
+        uiManager?.HidePassiveItem(uiId);
+
+        OnPassiveRemovedLocal();
+    }
 }

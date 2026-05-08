@@ -39,6 +39,8 @@ public class InGameUIManger : MonoBehaviour
     [SerializeField] private PassiveItemUISlot passiveItemSlotPrefab;
 
     private readonly Dictionary<int, PassiveItemUISlot> passiveItemSlots = new Dictionary<int, PassiveItemUISlot>();
+    private readonly Dictionary<int, Coroutine> passiveTimerCoroutines = new Dictionary<int, Coroutine>();
+
 
     [Header("HealthBar Anim")]
     public float delayTime = 0.5f; // 닳기 시작까지 대기 시간
@@ -195,7 +197,7 @@ public class InGameUIManger : MonoBehaviour
     }
 
     // 패시브 아이템 획득 시 호출
-    public void ShowPassiveItem(int uiId, Sprite sprite, PassiveUIType uiType)
+    public void ShowPassiveItem(int uiId, Sprite sprite, PassiveUIType uiType, float duration)
     {
         if (passiveItemRoot == null || passiveItemSlotPrefab == null) return;
 
@@ -209,6 +211,18 @@ public class InGameUIManger : MonoBehaviour
         slot.transform.SetAsLastSibling();
 
         passiveItemSlots[uiId] = slot;
+
+        if (passiveTimerCoroutines.TryGetValue(uiId, out Coroutine oldRoutine))
+        {
+            StopCoroutine(oldRoutine);
+            passiveTimerCoroutines.Remove(uiId);
+        }
+
+        if (useTimer)
+        {
+            Coroutine routine = StartCoroutine(PassiveItemTimerCoroutine(uiId, duration));
+            passiveTimerCoroutines[uiId] = routine;
+        }
     }
 
     public void UpdatePassiveItemTimer(int uiId, float normalized)
@@ -234,6 +248,12 @@ public class InGameUIManger : MonoBehaviour
             Destroy(slot.gameObject);
 
         passiveItemSlots.Remove(uiId);
+
+        if (passiveTimerCoroutines.TryGetValue(uiId, out Coroutine routine))
+        {
+            StopCoroutine(routine);
+            passiveTimerCoroutines.Remove(uiId);
+        }
     }
 
     // 아이템 타이머 코루틴
@@ -262,6 +282,26 @@ public class InGameUIManger : MonoBehaviour
 
 
         weaponItemCoroutine = null;
+    }
+
+    // 패시브 아이템 타이머 코루틴
+    private IEnumerator PassiveItemTimerCoroutine(int uiId, float duration)
+    {
+        if (duration <= 0f) yield break;
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float normalized = 1f - elapsed / duration;
+            UpdatePassiveItemTimer(uiId, normalized);
+
+            yield return null;
+        }
+
+        UpdatePassiveItemTimer(uiId, 0f);
     }
 
     // 키세팅 버튼 클릭 시 - ui 등장
