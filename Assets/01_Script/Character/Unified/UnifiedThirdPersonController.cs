@@ -284,8 +284,14 @@ namespace StarterAssets
 
         private void GroundedCheck()
         {
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
-            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+            Vector3 spherePosition = new Vector3(transform.position.x,
+                transform.position.y - GroundedOffset, transform.position.z);
+            bool layerGrounded = Physics.CheckSphere(spherePosition, GroundedRadius,
+                GroundLayers, QueryTriggerInteraction.Ignore);
+
+            // 다른 플레이어 위에 올라갔을 때도 grounded 로 인정 → VerticalSpeed 무한 누적 방지
+            Grounded = layerGrounded || (_controller != null && _controller.isGrounded);
+
             if (_hasAnimator) _animator.SetBool(_animIDGrounded, Grounded);
         }
 
