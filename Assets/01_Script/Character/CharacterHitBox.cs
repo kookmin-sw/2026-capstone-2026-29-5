@@ -13,6 +13,12 @@ public class CharacterHitBox : MonoBehaviour
     public GameObject hitEffectPrefab;  // VFX_ImpactClassic01 프리팹들을 여기에 드래그
     public float effectDuration = 2f;
 
+    [Header("Attack Hit Sound")]
+    [Tooltip("히트박스에 부착된 AudioSource. 비어있으면 PlayClipAtPoint로 fallback.")]
+    public AudioSource audioSource;
+    [Tooltip("공격이 적중했을 때 재생되는 사운드 (랜덤 픽)")]
+    public AudioClip[] attackHitSounds;
+
     [Header("State Permission")]
     // 이 히트박스가 활성화될 수 있는 스테이트 이름 목록
     public List<string> allowedStates = new List<string>();
@@ -66,6 +72,7 @@ public class CharacterHitBox : MonoBehaviour
             iTarget.RequestTakeDamage(finalDamage);
 
             iTarget.RequestSpawnHitEffect(hitPoint, hitNormal, effectIndex);
+            PlayAttackHitSound(hitPoint);
             hitboxCollider.enabled = false;
             return;
         }
@@ -83,9 +90,25 @@ public class CharacterHitBox : MonoBehaviour
             float finalDamage = damage * multipleDMG;
             localTarget.TakeDamage(finalDamage);
 
+            PlayAttackHitSound(other.ClosestPoint(hitboxCollider.transform.position));
             hitboxCollider.enabled = false;
             return;
         }
+    }
+
+    /// <summary>
+    /// 공격 성공 사운드 재생. AudioSource가 있으면 PlayOneShot, 없으면 PlayClipAtPoint로 fallback.
+    /// </summary>
+    private void PlayAttackHitSound(Vector3 position)
+    {
+        if (attackHitSounds == null || attackHitSounds.Length == 0) return;
+        AudioClip clip = attackHitSounds[Random.Range(0, attackHitSounds.Length)];
+        if (clip == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip);
+        else
+            AudioSource.PlayClipAtPoint(clip, position);
     }
 
     //소유주 판별 함수로 소유주 판별하는 방식으로 변경. 무기가 root에 있지 않으므로

@@ -24,10 +24,22 @@ public class UnifiedCharacterView : MonoBehaviour
 
     [Header("Sound Settings")]
     public AudioSource audioSource;
-    public AudioClip punchSounds;
-    public AudioClip hitSounds;
+    [Tooltip("공격 모션 시 재생되는 사운드 (랜덤 픽)")]
+    public AudioClip[] attackSounds;
+    [Tooltip("공격 모션 시 재생되는 캐릭터 보이스 (랜덤 픽)")]
+    public AudioClip[] attackVoiceSounds;
+    [Tooltip("피격 시 재생되는 타격 사운드 (랜덤 픽)")]
+    public AudioClip[] hitSounds;
+    [Tooltip("피격 시 재생되는 캐릭터 보이스 (랜덤 픽)")]
+    public AudioClip[] hitVoiceSounds;
     public AudioClip chargeSounds;
     public AudioClip readySounds;
+
+    [Header("Sound Toggles")]
+    [Tooltip("공격 보이스 재생 여부")]
+    public bool playAttackVoice = true;
+    [Tooltip("피격 보이스 재생 여부")]
+    public bool playHitVoice = true;
 
     // 히트박스 리셋용 스테이트 감시
     private int _prevStateHash;
@@ -109,10 +121,21 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.SetTrigger("GetHit");
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(punchSounds);
-                audioSource.PlayOneShot(hitSounds);
+                PlayRandom(hitSounds);
+                if (playHitVoice) PlayRandom(hitVoiceSounds);
             }
         }
+    }
+
+    /// <summary>
+    /// 사운드 클립 배열에서 랜덤으로 하나를 골라 재생.
+    /// </summary>
+    private void PlayRandom(AudioClip[] clips)
+    {
+        if (audioSource == null) return;
+        if (clips == null || clips.Length == 0) return;
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        if (clip != null) audioSource.PlayOneShot(clip);
     }
 
     private void HandleDie() => anim.SetBool("Die", true);
@@ -138,6 +161,10 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.ResetTrigger("AttackTrigger");
             anim.SetInteger("ComboStep", step);
             anim.SetTrigger("AttackTrigger");
+
+            // 공격 모션 시작과 동시에 사운드 재생
+            PlayRandom(attackSounds);
+            if (playAttackVoice) PlayRandom(attackVoiceSounds);
         }
         else
         {

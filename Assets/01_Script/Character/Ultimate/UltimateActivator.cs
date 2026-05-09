@@ -80,10 +80,16 @@ public class UltimateActivator : NetworkBehaviour
     [Tooltip("슬로우/카메라 줌 유지 시간 (realtime 초)")]
     public float slowMotionDuration = 1.6f;
 
+    [Tooltip("슬로우 종료 후, 정상속도로 필살기 모션이 재생될 추가 시간 (그 동안 본인+타겟 입력 차단, 카메라 anchor 유지)")]
+    public float ultimateMotionDuration = 1.5f;
+
     [Tooltip("타겟의 Animator 도 같이 슬로우 적용")]
     public bool slowTargetAnim = true;
 
-    [Header("연출 - 타겟 입력 차단")]
+    [Header("연출 - 입력 차단")]
+    [Tooltip("연출 동안 본인의 StarterAssetsInputs / PlayerInput 비활성화 (R 누른 시점부터 모션 끝까지)")]
+    public bool blockSelfInput = true;
+
     [Tooltip("연출 동안 타겟의 StarterAssetsInputs / PlayerInput 비활성화 (이동/공격 입력 차단)")]
     public bool blockTargetInput = true;
 
@@ -121,6 +127,12 @@ public class UltimateActivator : NetworkBehaviour
     private Transform cachedVcamFollow;
     private Transform cachedVcamLookAt;
 
+    // 본인 입력 차단 복원용 캐시
+    private StarterAssetsInputs cachedSelfSAI;
+    private bool cachedSelfSAIEnabled;
+    private PlayerInput cachedSelfPI;
+    private bool cachedSelfPIEnabled;
+
     // 타겟 입력 차단 복원용 캐시
     private StarterAssetsInputs cachedTargetSAI;
     private bool cachedTargetSAIEnabled;
@@ -155,10 +167,11 @@ public class UltimateActivator : NetworkBehaviour
         if (selfModel != null)
             selfModel.OnRespawn -= HandleRespawn;
 
-        // 안전장치: 도중에 비활성화돼도 Animator/카메라/타겟 입력 원복
+        // 안전장치: 도중에 비활성화돼도 Animator/카메라/입력 원복
         if (isPlaying)
         {
             if (selfAnimator != null) selfAnimator.speed = 1f;
+            RestoreSelfInput();
             RestoreTargetInput();
             RestoreCamera();
             isPlaying = false;
@@ -357,7 +370,10 @@ public class UltimateActivator : NetworkBehaviour
             if (targetAnim != null) targetAnim.speed = slowMotionAnimSpeed;
         }
 
-        // 3-2) 타겟 입력 차단 (이동/공격 등 모든 액션 입력)
+        // 3-2) 본인 입력 차단 (이동/공격 등 - R 누른 시점부터 모션 끝까지)
+        BlockSelfInput();
+
+        // 3-3) 타겟 입력 차단 (이동/공격 등 모든 액션 입력)
         if (blockTargetInput && target != null)
         {
             cachedTargetSAI = target.GetComponentInChildren<StarterAssetsInputs>();
@@ -380,7 +396,7 @@ public class UltimateActivator : NetworkBehaviour
             }
         }
 
-        // 3-3) 타겟 Rigidbody velocity 영점화 (관성 미끄러짐 방지)
+        // 3-4) 타겟 Rigidbody velocity 영점화 (관성 미끄러짐 방지)
         if (zeroTargetVelocity && target != null)
         {
             cachedTargetRb = target.GetComponentInChildren<Rigidbody>();
@@ -399,16 +415,60 @@ public class UltimateActivator : NetworkBehaviour
             selfAnimator.SetTrigger(ultimateAnimTrigger);
         }
 
-        // 5) 슬로우 유지
+        // 5) Phase 1 — 슬로우 유지 (양쪽 슬로우 + 입력 차단)
         yield return new WaitForSecondsRealtime(slowMotionDuration);
 
-        // 6) 복원
+        // 6) 슬로우 해제 (Animator 정상속도로 모션 진행)
         if (selfAnimator != null) selfAnimator.speed = 1f;
         if (targetAnim != null) targetAnim.speed = 1f;
 
+        // 7) Phase 2 — 정상속도 모션 진행 (카메라 anchor 유지, 입력 차단 유지)
+        yield return new WaitForSecondsRealtime(ultimateMotionDuration);
+
+        // 8) 모두 복원
+        RestoreSelfInput();
         RestoreTargetInput();
         RestoreCamera();
         isPlaying = false;
+    }
+
+    /// <summary>본인의 StarterAssetsInputs / PlayerInput 비활성화 + 잔류 입력 클리어</summary>
+    private void BlockSelfInput()
+    {
+        if (!blockSelfInput) return;
+
+        cachedSelfSAI = GetComponentInChildren<StarterAssetsInputs>();
+        if (cachedSelfSAI != null)
+        {
+            cachedSelfSAIEnabled = cachedSelfSAI.enabled;
+            cachedSelfSAI.move = Vector2.zero;
+            cachedSelfSAI.look = Vector2.zero;
+            cachedSelfSAI.jump = false;
+            cachedSelfSAI.sprint = false;
+            cachedSelfSAI.enabled = false;
+        }
+
+        cachedSelfPI = GetComponentInChildren<PlayerInput>();
+        if (cachedSelfPI != null)
+        {
+            cachedSelfPIEnabled = cachedSelfPI.enabled;
+            cachedSelfPI.enabled = false;
+        }
+    }
+
+    /// <summary>본인 Input 캐싱값으로 복원</summary>
+    private void RestoreSelfInput()
+    {
+        if (cachedSelfSAI != null)
+        {
+            cachedSelfSAI.enabled = cachedSelfSAIEnabled;
+            cachedSelfSAI = null;
+        }
+        if (cachedSelfPI != null)
+        {
+            cachedSelfPI.enabled = cachedSelfPIEnabled;
+            cachedSelfPI = null;
+        }
     }
 
     /// <summary>타겟 Input/Rigidbody 캐싱값으로 복원 (원래 Disable이었으면 그대로 둠)</summary>
