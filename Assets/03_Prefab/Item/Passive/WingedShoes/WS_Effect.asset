@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: WS_Effect
   m_EditorClassIdentifier: 
   duration: 10
-  moveSpeedMultiplier: 1.5
-  uiSprite: {fileID: 21300000, guid: c89356237da2e2b49a0e00c0707bfa35, type: 3}
-  uiType: 1
+  moveSpeedMultiplier: 2
