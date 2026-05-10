@@ -135,6 +135,28 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
         if (handler != null) handler.Unequip();
     }
 
+    // ─────────────────────────────────────────────
+    //  외부 강제 만료 (예: 궁극기 종료 시)
+    // ─────────────────────────────────────────────
+    /// <summary>
+    /// 외부에서 즉시 무기 수명을 끝낸다.
+    /// - 권위(서버/오프라인)에서만 동작. 클라이언트에서 호출되면 무시.
+    /// - 던지기 진행 중이면 무시(이미 던져진 무기는 자기 라이프사이클을 따름).
+    /// - 흐름은 lifeTimer 만료와 동일: atkSpeed 해제 → NotifyUnequip(RpcUnequip) → Destroy.
+    /// </summary>
+    public void ForceExpire()
+    {
+        bool hasAuthority = AuthorityGuard.IsOffline || isServer;
+        if (!hasAuthority) return;
+        if (isThrown) return;
+
+        if (atkSpeed != null) atkSpeed.Remove();
+        NotifyUnequip();
+
+        if (AuthorityGuard.IsOffline) Destroy(gameObject);
+        else NetworkServer.Destroy(gameObject);
+    }
+
 
     // IWeaponHitBox
     public void SetOwner(GameObject user) { owner = user; }

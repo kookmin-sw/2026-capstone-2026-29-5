@@ -41,6 +41,14 @@ public class UnifiedCharacterView : MonoBehaviour
     [Tooltip("피격 보이스 재생 여부")]
     public bool playHitVoice = true;
 
+    [Header("Sound Volumes")]
+    [Range(0f, 1f)] public float attackVolume = 1f;
+    [Range(0f, 1f)] public float attackVoiceVolume = 1f;
+    [Range(0f, 1f)] public float hitVolume = 1f;
+    [Range(0f, 1f)] public float hitVoiceVolume = 1f;
+    [Range(0f, 1f)] public float chargeVolume = 1f;
+    [Range(0f, 1f)] public float readyVolume = 1f;
+
     // 히트박스 리셋용 스테이트 감시
     private int _prevStateHash;
 
@@ -121,8 +129,8 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.SetTrigger("GetHit");
             if (audioSource != null)
             {
-                PlayRandom(hitSounds);
-                if (playHitVoice) PlayRandom(hitVoiceSounds);
+                PlayRandom(hitSounds, hitVolume);
+                if (playHitVoice) PlayRandom(hitVoiceSounds, hitVoiceVolume);
             }
         }
     }
@@ -130,12 +138,12 @@ public class UnifiedCharacterView : MonoBehaviour
     /// <summary>
     /// 사운드 클립 배열에서 랜덤으로 하나를 골라 재생.
     /// </summary>
-    private void PlayRandom(AudioClip[] clips)
+    private void PlayRandom(AudioClip[] clips, float volume = 1f)
     {
         if (audioSource == null) return;
         if (clips == null || clips.Length == 0) return;
         AudioClip clip = clips[Random.Range(0, clips.Length)];
-        if (clip != null) audioSource.PlayOneShot(clip);
+        if (clip != null) audioSource.PlayOneShot(clip, volume);
     }
 
     private void HandleDie() => anim.SetBool("Die", true);
@@ -163,8 +171,8 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.SetTrigger("AttackTrigger");
 
             // 공격 모션 시작과 동시에 사운드 재생
-            PlayRandom(attackSounds);
-            if (playAttackVoice) PlayRandom(attackVoiceSounds);
+            PlayRandom(attackSounds, attackVolume);
+            if (playAttackVoice) PlayRandom(attackVoiceSounds, attackVoiceVolume);
         }
         else
         {
@@ -202,11 +210,11 @@ public class UnifiedCharacterView : MonoBehaviour
             if (chargeReadyEffect) chargeReadyEffect.SetActive(false);
             return;
         }
-        if (audioSource != null) audioSource.PlayOneShot(chargeSounds);
+        if (audioSource != null && chargeSounds != null) audioSource.PlayOneShot(chargeSounds, chargeVolume);
 
         if (isReady)
         {
-            if (audioSource != null) audioSource.PlayOneShot(readySounds);
+            if (audioSource != null && readySounds != null) audioSource.PlayOneShot(readySounds, readyVolume);
             if (chargingEffect) chargingEffect.SetActive(false);
             if (chargeReadyEffect) chargeReadyEffect.SetActive(true);
         }

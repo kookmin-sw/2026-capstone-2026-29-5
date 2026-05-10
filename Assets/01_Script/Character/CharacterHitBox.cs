@@ -18,6 +18,7 @@ public class CharacterHitBox : MonoBehaviour
     public AudioSource audioSource;
     [Tooltip("공격이 적중했을 때 재생되는 사운드 (랜덤 픽)")]
     public AudioClip[] attackHitSounds;
+    [Range(0f, 1f)] public float attackHitVolume = 1f;
 
     [Header("State Permission")]
     // 이 히트박스가 활성화될 수 있는 스테이트 이름 목록
@@ -106,9 +107,9 @@ public class CharacterHitBox : MonoBehaviour
         if (clip == null) return;
 
         if (audioSource != null)
-            audioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip, attackHitVolume);
         else
-            AudioSource.PlayClipAtPoint(clip, position);
+            AudioSource.PlayClipAtPoint(clip, position, attackHitVolume);
     }
 
     //소유주 판별 함수로 소유주 판별하는 방식으로 변경. 무기가 root에 있지 않으므로
