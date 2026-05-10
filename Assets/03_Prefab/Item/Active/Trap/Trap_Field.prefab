@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 510822029673109629}
   - component: {fileID: 6700886438092791546}
   - component: {fileID: 6883768979605760790}
+  - component: {fileID: -8523587167006363521}
   m_Layer: 3
   m_Name: Trap_Field
   m_TagString: Active
@@ -89,6 +90,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-8523587167006363521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2451240541909540556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: c532aa0b2df53d547b40b1829c816e99, type: 3}
+  pickupVolume: 1
 --- !u!1001 &8349412197537557722
 PrefabInstance:
   m_ObjectHideFlags: 0

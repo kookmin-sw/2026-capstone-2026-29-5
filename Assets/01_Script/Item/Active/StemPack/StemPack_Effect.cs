@@ -15,6 +15,11 @@ public class StemPack_Effect : ScriptableObject, IActive
     [SerializeField] private Sprite uiSprite;
     public Sprite UISprite => uiSprite;
 
+    [Header("Sound Settings")]
+    [Tooltip("사용 시 재생되는 사운드 (랜덤 픽). owner 위치에서 PlayClipAtPoint로 재생됨.")]
+    [SerializeField] private AudioClip[] useSounds;
+    [SerializeField, Range(0f, 1f)] private float useVolume = 1f;
+
     public float AvailableTime => duration;
 
     public virtual IEnumerator Activate(GameObject owner)
@@ -22,6 +27,10 @@ public class StemPack_Effect : ScriptableObject, IActive
         if (owner == null) yield break;
 
         Debug.Log("[StemPack] 활성화 시작");
+
+        // 사용 사운드: owner 위치에서 PlayClipAtPoint
+        // (오프라인은 정상, 온라인은 서버에서만 Activate가 돌므로 호스트만 들림 — 옵션 A 한계)
+        PlayUseSound(owner);
 
         ICharacterModel model = owner.GetComponent<ICharacterModel>();
         if (model != null)
@@ -89,5 +98,19 @@ public class StemPack_Effect : ScriptableObject, IActive
         {
             controller.RequestSetAnimatorSpeed(animator.speed / animSpeedMultiplier);
         }
+    }
+
+    /// <summary>
+    /// 사용 사운드 재생. 클립 배열에서 랜덤 픽 → owner 위치에서 PlayClipAtPoint.
+    /// </summary>
+    private void PlayUseSound(GameObject owner)
+    {
+        if (useSounds == null || useSounds.Length == 0) return;
+        if (owner == null) return;
+
+        AudioClip clip = useSounds[Random.Range(0, useSounds.Length)];
+        if (clip == null) return;
+
+        AudioSource.PlayClipAtPoint(clip, owner.transform.position, useVolume);
     }
 }

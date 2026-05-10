@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 1615501050177247395}
   - component: {fileID: 1690793954672409645}
   - component: {fileID: 957863597585928727}
+  - component: {fileID: 7115569299111334866}
   m_Layer: 3
   m_Name: Stem_Pack_Field
   m_TagString: Active
@@ -256,6 +257,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: 91f258f59c9b1c243bdb4b1e906dbcd4, type: 2}
+--- !u!114 &7115569299111334866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2167918261752081878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: 2380a0332666841498e7f7b96b10751f, type: 3}
+  pickupVolume: 1
 --- !u!1 &2385271199996418426
 GameObject:
   m_ObjectHideFlags: 0

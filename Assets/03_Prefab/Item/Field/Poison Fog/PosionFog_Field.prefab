@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8728744114424484992}
   - component: {fileID: 8400015361815401627}
   - component: {fileID: -9131747313509832101}
+  - component: {fileID: 1038863152743047785}
   m_Layer: 3
   m_Name: PosionFog_Field
   m_TagString: Field
@@ -90,6 +91,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: 3d0ff58f56ead3a4da1494453998119f, type: 2}
+--- !u!114 &1038863152743047785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2339528841912398717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: 0daa27b0eb07ed74d9c64825b465c4cf, type: 3}
+  pickupVolume: 1
 --- !u!1001 &1505938943628612693
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4354754786169273356}
   - component: {fileID: 3236150776013976577}
   - component: {fileID: 7373243688753183627}
+  - component: {fileID: -3775846863894957213}
   m_Layer: 3
   m_Name: Smoke_Grenade_Field
   m_TagString: Active
@@ -90,6 +91,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: 02f1a5640b8135d40afcf1512c40d40e, type: 2}
+--- !u!114 &-3775846863894957213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2667290322979706119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: 4f752b323cb801d45b77748bad0ce00c, type: 3}
+  pickupVolume: 1
 --- !u!1 &4243757931953814267
 GameObject:
   m_ObjectHideFlags: 0

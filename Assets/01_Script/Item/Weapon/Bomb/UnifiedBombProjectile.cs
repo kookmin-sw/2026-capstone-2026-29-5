@@ -45,7 +45,14 @@ public class UnifiedBombProjectile : NetworkBehaviour
     private bool _exploded;
 
     // 충돌 판정용 레이어 - 인스펙터에서 설정.
-    [SerializeField] private LayerMask collisionMask = ~0; 
+    [SerializeField] private LayerMask collisionMask = ~0;
+
+    [Header("Sound Settings")]
+    [Tooltip("폭발 사운드용 AudioSource. 비어있으면 PlayClipAtPoint로 fallback (권장 — 폭탄이 즉시 파괴되어 PlayOneShot이 잘릴 수 있음).")]
+    [SerializeField] private AudioSource audioSource;
+    [Tooltip("폭발 시 재생되는 사운드 (랜덤 픽)")]
+    [SerializeField] private AudioClip[] explosionSounds;
+    [SerializeField, Range(0f, 1f)] private float explosionVolume = 1f;
 
     private bool HasAuthority => AuthorityGuard.IsOffline || isServer;
     private bool IsLaunchedNow() => AuthorityGuard.IsOffline ? _localLaunched : isLaunched;
@@ -233,7 +240,34 @@ public class UnifiedBombProjectile : NetworkBehaviour
             StartCoroutine(CleanupExplosion(explosion, _explosionLifetime));
         }
 
+        // 폭발 사운드: 오프라인은 직접, 온라인은 모든 클라이언트에 RPC
+        // 폭탄 본체가 곧 파괴되므로 PlayClipAtPoint를 fallback으로 활용.
+        if (AuthorityGuard.IsOffline)
+            PlayExplosionSound(pos);
+        else
+            RpcPlayExplosionSound(pos);
+
         DestroySelf();
+    }
+
+    [ClientRpc]
+    private void RpcPlayExplosionSound(Vector3 pos) => PlayExplosionSound(pos);
+
+    /// <summary>
+    /// 폭발 사운드 재생. 클립 배열에서 랜덤 픽.
+    /// audioSource가 있으면 PlayOneShot, 없으면 PlayClipAtPoint로 fallback.
+    /// (폭탄 오브젝트는 폭발 직후 파괴되므로 PlayClipAtPoint가 안전함)
+    /// </summary>
+    private void PlayExplosionSound(Vector3 position)
+    {
+        if (explosionSounds == null || explosionSounds.Length == 0) return;
+        AudioClip clip = explosionSounds[Random.Range(0, explosionSounds.Length)];
+        if (clip == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip, explosionVolume);
+        else
+            AudioSource.PlayClipAtPoint(clip, position, explosionVolume);
     }
 
     private IEnumerator CleanupExplosion(GameObject explosion, float delay)

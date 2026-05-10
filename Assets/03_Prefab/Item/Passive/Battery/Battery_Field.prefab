@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8694461587923485854}
   - component: {fileID: 167377881575743578}
   - component: {fileID: 6446541272448518437}
+  - component: {fileID: -8026544173661265434}
   m_Layer: 3
   m_Name: Battery_Field
   m_TagString: Passive
@@ -122,6 +123,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: 90d8835f0bf42554d8885faa5f162b3b, type: 2}
+--- !u!114 &-8026544173661265434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395818713058702729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: bffd3a7c60906b847adc4ea34f2a6cc2, type: 3}
+  pickupVolume: 1
 --- !u!1 &3516968076649387406
 GameObject:
   m_ObjectHideFlags: 0

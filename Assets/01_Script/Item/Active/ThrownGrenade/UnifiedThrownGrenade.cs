@@ -32,6 +32,13 @@ public class UnifiedThrownGrenade : NetworkBehaviour
     [Header("Toon")]
     [SyncVar, Range(2, 6)] public int toonSteps = 2;
 
+    [Header("Sound Settings")]
+    [Tooltip("연막 전개 사운드용 AudioSource. 비어있으면 PlayClipAtPoint로 fallback.")]
+    public AudioSource audioSource;
+    [Tooltip("연막탄이 전개되는 순간 재생되는 사운드 (랜덤 픽). '프슉~' 소리 등.")]
+    public AudioClip[] deploySounds;
+    [Range(0f, 1f)] public float deployVolume = 1f;
+
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private Material smokeMaterial;
@@ -95,6 +102,25 @@ public class UnifiedThrownGrenade : NetworkBehaviour
         meshRenderer.receiveShadows = false;
 
         transform.localScale = Vector3.zero;
+
+        // 연막 전개 사운드 재생 (각 클라이언트가 자신의 InitVisuals에서 직접 재생하므로 RPC 불필요)
+        PlayDeploySound();
+    }
+
+    /// <summary>
+    /// 연막 전개 사운드 재생. 클립 배열에서 랜덤 픽.
+    /// audioSource가 있으면 PlayOneShot, 없으면 PlayClipAtPoint로 fallback.
+    /// </summary>
+    private void PlayDeploySound()
+    {
+        if (deploySounds == null || deploySounds.Length == 0) return;
+        AudioClip clip = deploySounds[Random.Range(0, deploySounds.Length)];
+        if (clip == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip, deployVolume);
+        else
+            AudioSource.PlayClipAtPoint(clip, transform.position, deployVolume);
     }
 
     private void UpdateMaterialProperties()

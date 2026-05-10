@@ -80,6 +80,13 @@ MonoBehaviour:
   trapColor: {r: 0.8, g: 0.2, b: 0.2, a: 0.6}
   triggerParameterName: Trapped
   animator: {fileID: 85494039522739456}
+  audioSource: {fileID: 0}
+  placeSounds:
+  - {fileID: 8300000, guid: aeb93e02f265e7e4c84ae439c8ae3bb2, type: 3}
+  placeVolume: 1
+  triggerSounds:
+  - {fileID: 8300000, guid: c532aa0b2df53d547b40b1829c816e99, type: 3}
+  triggerVolume: 1
 --- !u!114 &4438409776930416155
 MonoBehaviour:
   m_ObjectHideFlags: 0

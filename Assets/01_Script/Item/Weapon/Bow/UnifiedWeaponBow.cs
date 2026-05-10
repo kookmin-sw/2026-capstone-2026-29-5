@@ -62,6 +62,12 @@ public class UnifiedWeaponBow : NetworkBehaviour, IPlayerWeapon
     [Header("활 애니메이션")]
     [SerializeField] private UnifiedBowAnimationController bowAnim;
 
+    [Header("Sound Settings")]
+    public AudioSource audioSource;
+    [Tooltip("화살 발사(시위 놓는) 순간 재생되는 사운드 (랜덤 픽)")]
+    public AudioClip[] shootSounds;
+    [Range(0f, 1f)] public float shootVolume = 1f;
+
     [Header("에임 보정")]
     [Tooltip("활 발사 애니메이션이 캐릭터 정면이 아닌 측면 스탠스일 때 몸 회전 보정각(도). " +
              "애니메이션이 캐릭터 오른쪽(+X)으로 발사하면 양수, 왼쪽이면 음수. " +
@@ -388,6 +394,7 @@ public class UnifiedWeaponBow : NetworkBehaviour, IPlayerWeapon
         Vector3 direction = GetCameraAimDirection();
 
         loadedArrow.Launch(direction, launchSpeed);
+        PlayShootSound();
 
         loadedArrow = null;
         loadedArrowObj = null;
@@ -528,6 +535,18 @@ public class UnifiedWeaponBow : NetworkBehaviour, IPlayerWeapon
     private void RpcOnRelease()
     {
         isCharging = false;
+        PlayShootSound();
+    }
+
+    /// <summary>
+    /// 발사 사운드 재생. 클립 배열에서 랜덤 픽.
+    /// </summary>
+    private void PlayShootSound()
+    {
+        if (audioSource == null) return;
+        if (shootSounds == null || shootSounds.Length == 0) return;
+        AudioClip clip = shootSounds[Random.Range(0, shootSounds.Length)];
+        if (clip != null) audioSource.PlayOneShot(clip, shootVolume);
     }
 
     private void CancelChargeServer()

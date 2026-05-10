@@ -76,3 +76,7 @@ MonoBehaviour:
   noiseSpeed: 0.3
   displacement: 0.65
   toonSteps: 2
+  audioSource: {fileID: 0}
+  deploySounds:
+  - {fileID: 8300000, guid: 86dd993b55279c44c962e731a8bad240, type: 3}
+  deployVolume: 1

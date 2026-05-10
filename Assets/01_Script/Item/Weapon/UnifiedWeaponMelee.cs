@@ -30,6 +30,15 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
     [Tooltip("던지기 키 (오프라인 단일 플레이어 입력)")]
     [SerializeField] private KeyCode throwKey = KeyCode.F;
 
+    [Header("Sound Settings")]
+    [Tooltip("이 무기를 휘두를 때 재생되는 사운드. 비어있으면 캐릭터 기본 펀치 사운드가 그대로 재생됨.")]
+    public AudioSource audioSource;
+    public AudioClip[] swingSounds;
+    [Range(0f, 1f)] public float swingVolume = 1f;
+
+    // 등록한 CharacterView 참조 (해제 시 정확히 같은 view에서 풀어줘야 race 방지)
+    private UnifiedCharacterView _registeredView;
+
     [SyncVar] private GameObject owner;
     [SyncVar] private bool isThrown;
     [SyncVar] private Vector3 flyDirection;
@@ -74,6 +83,7 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
             if (atkSpeed != null) atkSpeed.ApplyTo(user);
 
             EquipHandler(user);
+            RegisterSwingSoundOverride(user);
             NotifyWeaponUI(user); // 아이템 UI 표시 추가
             return;
         }
@@ -94,7 +104,45 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
         if (weaponHitbox != null) weaponHitbox.EnableHitbox();
 
         EquipHandler(user);
+        RegisterSwingSoundOverride(user);
         NotifyWeaponUI(user);
+    }
+
+    /// <summary>
+    /// 장착자의 UnifiedCharacterView에 자기 swing 사운드를 등록.
+    /// 이후 캐릭터가 콤보 공격할 때 캐릭터 기본 펀치 대신 이 무기의 사운드가 재생됨.
+    /// </summary>
+    private void RegisterSwingSoundOverride(GameObject user)
+    {
+        if (user == null) return;
+        UnifiedCharacterView view = user.GetComponent<UnifiedCharacterView>();
+        if (view == null) view = user.GetComponentInChildren<UnifiedCharacterView>();
+        if (view == null) return;
+
+        view.SetMeleeWeapon(this);
+        _registeredView = view;
+    }
+
+    /// <summary>
+    /// 등록된 view에서 swing 사운드 override를 해제.
+    /// 다른 무기로 교체된 경우 ClearMeleeWeapon이 자기 자신일 때만 풀어줌 (오삭제 방지).
+    /// </summary>
+    private void UnregisterSwingSoundOverride()
+    {
+        if (_registeredView == null) return;
+        _registeredView.ClearMeleeWeapon(this);
+        _registeredView = null;
+    }
+
+    /// <summary>
+    /// 휘두르는 사운드 재생. UnifiedCharacterView.HandleCombo에서 호출됨.
+    /// </summary>
+    public void PlaySwingSound()
+    {
+        if (audioSource == null) return;
+        if (swingSounds == null || swingSounds.Length == 0) return;
+        AudioClip clip = swingSounds[Random.Range(0, swingSounds.Length)];
+        if (clip != null) audioSource.PlayOneShot(clip, swingVolume);
     }
 
 
@@ -273,6 +321,7 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
         isThrown = true;
 
         UnequipHandler();
+        UnregisterSwingSoundOverride();
 
         if (weaponHitbox != null) weaponHitbox.EnableHitbox();
 
@@ -298,6 +347,13 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
     {
         if (weaponHitbox != null) weaponHitbox.DisableHitbox();
         UnequipHandler();
+        UnregisterSwingSoundOverride();
+    }
+
+    // 오브젝트 파괴 시에도 안전하게 정리 (수명만료/씬 종료 등)
+    private void OnDestroy()
+    {
+        UnregisterSwingSoundOverride();
     }
 
     // 아이템 UI 작용 메소드

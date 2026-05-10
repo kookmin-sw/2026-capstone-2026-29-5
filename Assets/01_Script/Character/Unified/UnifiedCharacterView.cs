@@ -55,6 +55,25 @@ public class UnifiedCharacterView : MonoBehaviour
     // 데미지 판정용 직전 HP (회복/리스폰 시 GetHit 트리거 오발 방지)
     private float _prevHealth = float.MaxValue;
 
+    // 근접무기 장착 시 공격 사운드를 덮어씌우기 위한 슬롯.
+    // null이면 캐릭터 기본 attackSounds(맨손 펀치)가 재생됨.
+    private UnifiedWeaponMelee _meleeOverride;
+
+    /// <summary>
+    /// 근접무기가 장착될 때 자기 자신을 등록한다.
+    /// 등록되면 HandleCombo에서 캐릭터 기본 펀치 대신 무기 swingSounds가 재생됨.
+    /// </summary>
+    public void SetMeleeWeapon(UnifiedWeaponMelee weapon) => _meleeOverride = weapon;
+
+    /// <summary>
+    /// 근접무기가 해제(만료/던지기/파괴)될 때 호출.
+    /// 등록된 무기가 자기 자신일 때만 슬롯을 비운다 — 다른 무기로 교체된 경우 오삭제 방지.
+    /// </summary>
+    public void ClearMeleeWeapon(UnifiedWeaponMelee weapon)
+    {
+        if (_meleeOverride == weapon) _meleeOverride = null;
+    }
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -171,7 +190,12 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.SetTrigger("AttackTrigger");
 
             // 공격 모션 시작과 동시에 사운드 재생
-            PlayRandom(attackSounds, attackVolume);
+            // 근접무기 장착 중이면 무기 swingSounds, 아니면 캐릭터 기본 펀치
+            if (_meleeOverride != null)
+                _meleeOverride.PlaySwingSound();
+            else
+                PlayRandom(attackSounds, attackVolume);
+
             if (playAttackVoice) PlayRandom(attackVoiceSounds, attackVoiceVolume);
         }
         else

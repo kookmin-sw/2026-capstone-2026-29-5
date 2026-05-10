@@ -67,6 +67,12 @@ public class UnifiedWeaponBomb : NetworkBehaviour, IPlayerWeapon
     [Header("던지기 입력")]
     [SerializeField] private KeyCode throwKey = KeyCode.Mouse0;
 
+    [Header("Sound Settings")]
+    public AudioSource audioSource;
+    [Tooltip("폭탄을 던지는 순간 재생되는 사운드 (랜덤 픽)")]
+    public AudioClip[] throwSounds;
+    [Range(0f, 1f)] public float throwVolume = 1f;
+
     [SyncVar] private GameObject owner;
     [SyncVar] private int remainingThrows;
 
@@ -262,12 +268,32 @@ public class UnifiedWeaponBomb : NetworkBehaviour, IPlayerWeapon
 
         SpawnBombProjectile(startPos, initialVelocity);
 
+        // 던지는 사운드: 오프라인은 직접, 온라인은 모든 클라이언트에 RPC
+        if (AuthorityGuard.IsOffline)
+            PlayThrowSound();
+        else
+            RpcPlayThrowSound();
+
         remainingThrows--;
 
         if (remainingThrows <= 0)
         {
             DepletedAndDestroy();
         }
+    }
+
+    [ClientRpc]
+    private void RpcPlayThrowSound() => PlayThrowSound();
+
+    /// <summary>
+    /// 던지는 사운드 재생. 클립 배열에서 랜덤 픽.
+    /// </summary>
+    private void PlayThrowSound()
+    {
+        if (audioSource == null) return;
+        if (throwSounds == null || throwSounds.Length == 0) return;
+        AudioClip clip = throwSounds[Random.Range(0, throwSounds.Length)];
+        if (clip != null) audioSource.PlayOneShot(clip, throwVolume);
     }
 
     /// 폭탄 투사체 스폰. 권위 측에서 호출. 비행은 투사체가 자체 시뮬레이션.

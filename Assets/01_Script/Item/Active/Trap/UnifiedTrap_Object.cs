@@ -31,6 +31,16 @@ public class UnifiedTrap_Object : NetworkBehaviour
     [Tooltip("Animator 컴포넌트 (비워두면 자식에서 자동 검색)")]
     [SerializeField] private Animator animator;
 
+    [Header("Sound Settings")]
+    [Tooltip("사운드용 AudioSource. 비어있으면 PlayClipAtPoint로 fallback (덫 위치에서 재생).")]
+    [SerializeField] private AudioSource audioSource;
+    [Tooltip("덫이 설치되는 순간 재생되는 사운드 (랜덤 픽)")]
+    [SerializeField] private AudioClip[] placeSounds;
+    [SerializeField, Range(0f, 1f)] private float placeVolume = 1f;
+    [Tooltip("덫이 발동되는 순간 재생되는 사운드 (랜덤 픽). 모든 클라이언트에 _triggered SyncVar로 자동 동기화됨.")]
+    [SerializeField] private AudioClip[] triggerSounds;
+    [SerializeField, Range(0f, 1f)] private float triggerVolume = 1f;
+
     [SyncVar] private uint ownerNetId;
     private GameObject ownerCache;
 
@@ -55,6 +65,8 @@ public class UnifiedTrap_Object : NetworkBehaviour
 
         if (AuthorityGuard.IsOffline)
         {
+            // 오프라인: NetworkBehaviour의 OnStart 콜백이 호출되지 않으므로 여기서 설치 사운드 재생
+            PlayPlaceSound();
         }
     }
 
@@ -62,6 +74,9 @@ public class UnifiedTrap_Object : NetworkBehaviour
     {
         base.OnStartClient();
         ResolveAnimator();
+
+        // 온라인: 모든 클라이언트가 자기 OnStartClient에서 설치 사운드를 직접 재생 (RPC 불필요)
+        PlayPlaceSound();
 
         // SyncVar 초기값은 hook이 호출되지 않을 수 있으므로 여기서 한 번 더 체크.
         if (_triggered && !_animationPlayed)
@@ -173,11 +188,14 @@ public class UnifiedTrap_Object : NetworkBehaviour
         PlayTriggerAnimation();
     }
 
-    // Animator의 trigger 파라미터를 발동시켜 애니메이션 재생.
+    // Animator의 trigger 파라미터를 발동시켜 애니메이션 재생 + 발동 사운드 재생.
     private void PlayTriggerAnimation()
     {
         if (_animationPlayed) return;
         _animationPlayed = true;
+
+        // 발동 사운드는 animator 유무와 독립적으로 재생 (animator 없어도 사운드는 들려야 함)
+        PlayTriggerSound();
 
         if (animator == null) ResolveAnimator();
 
@@ -195,6 +213,24 @@ public class UnifiedTrap_Object : NetworkBehaviour
 
         animator.SetTrigger(triggerParameterName);
         Debug.Log($"[UnifiedTrap] 애니메이션 트리거 발동: {triggerParameterName}");
+    }
+
+    // -----------------------------
+    // 사운드 헬퍼
+    // -----------------------------
+    private void PlayPlaceSound() => PlayRandomAt(placeSounds, placeVolume);
+    private void PlayTriggerSound() => PlayRandomAt(triggerSounds, triggerVolume);
+
+    private void PlayRandomAt(AudioClip[] clips, float volume)
+    {
+        if (clips == null || clips.Length == 0) return;
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        if (clip == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip, volume);
+        else
+            AudioSource.PlayClipAtPoint(clip, transform.position, volume);
     }
 
     private void ScheduleDestroyAfter(float delay)

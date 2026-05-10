@@ -51,6 +51,16 @@ public class Missile_Effect : FieldEffect
     [Tooltip("폭발 이펙트 자동 제거 시간(초)")]
     [SerializeField] private float explosionLifetime = 2f;
 
+    [Header("Sound Settings")]
+    [Tooltip("사운드용 AudioSource. 비어있으면 PlayClipAtPoint로 fallback (각 운석 임팩트 지점에서 재생됨, 권장).")]
+    [SerializeField] private AudioSource audioSource;
+    [Tooltip("경고 데칼이 나타날 때 재생되는 사운드 (랜덤 픽). 미사일 낙하/경보음 등.")]
+    [SerializeField] private AudioClip[] warningSounds;
+    [SerializeField, Range(0f, 1f)] private float warningVolume = 1f;
+    [Tooltip("미사일이 폭발할 때 재생되는 사운드 (랜덤 픽).")]
+    [SerializeField] private AudioClip[] explosionSounds;
+    [SerializeField, Range(0f, 1f)] private float explosionVolume = 1f;
+
     private readonly List<GameObject> _activeDecals = new List<GameObject>();
     private readonly List<GameObject> _activeExplosions = new List<GameObject>();
 
@@ -108,6 +118,9 @@ public class Missile_Effect : FieldEffect
             _activeDecals.Add(decal);
         }
 
+        // 경고 사운드: 데칼이 뜨는 순간 재생
+        BroadcastWarningSound(position);
+
         // 경고 후 일정시간 대기
         yield return new WaitForSeconds(warningDuration);
 
@@ -141,6 +154,63 @@ public class Missile_Effect : FieldEffect
             // 일정 시간 후 폭발 이펙트 제거
             StartCoroutine(CleanupExplosion(explosion, explosionLifetime));
         }
+
+        // 폭발 사운드: 폭발 이펙트와 동시 재생
+        BroadcastExplosionSound(position);
+    }
+
+    // -----------------------------
+    // 사운드 브로드캐스트
+    // 권위(서버/오프라인)에서 호출 → 오프라인은 직접, 온라인은 RPC로 모든 클라이언트 동시 재생.
+    // -----------------------------
+    private void BroadcastWarningSound(Vector3 position)
+    {
+        if (AuthorityGuard.IsOffline)
+            PlayWarningSound(position);
+        else
+            RpcPlayWarningSound(position);
+    }
+
+    private void BroadcastExplosionSound(Vector3 position)
+    {
+        if (AuthorityGuard.IsOffline)
+            PlayExplosionSound(position);
+        else
+            RpcPlayExplosionSound(position);
+    }
+
+    [ClientRpc]
+    private void RpcPlayWarningSound(Vector3 position) => PlayWarningSound(position);
+
+    [ClientRpc]
+    private void RpcPlayExplosionSound(Vector3 position) => PlayExplosionSound(position);
+
+    /// <summary>
+    /// 경고 사운드 재생. audioSource 있으면 PlayOneShot, 없으면 PlayClipAtPoint로 임팩트 위치에서 재생.
+    /// </summary>
+    private void PlayWarningSound(Vector3 position)
+    {
+        PlayRandomAt(warningSounds, warningVolume, position);
+    }
+
+    /// <summary>
+    /// 폭발 사운드 재생. audioSource 있으면 PlayOneShot, 없으면 PlayClipAtPoint로 임팩트 위치에서 재생.
+    /// </summary>
+    private void PlayExplosionSound(Vector3 position)
+    {
+        PlayRandomAt(explosionSounds, explosionVolume, position);
+    }
+
+    private void PlayRandomAt(AudioClip[] clips, float volume, Vector3 position)
+    {
+        if (clips == null || clips.Length == 0) return;
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        if (clip == null) return;
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip, volume);
+        else
+            AudioSource.PlayClipAtPoint(clip, position, volume);
     }
 
     private IEnumerator CleanupExplosion(GameObject explosion, float delay)
