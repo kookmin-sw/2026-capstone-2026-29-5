@@ -24,16 +24,55 @@ public class UnifiedCharacterView : MonoBehaviour
 
     [Header("Sound Settings")]
     public AudioSource audioSource;
-    public AudioClip punchSounds;
-    public AudioClip hitSounds;
+    [Tooltip("공격 모션 시 재생되는 사운드 (랜덤 픽)")]
+    public AudioClip[] attackSounds;
+    [Tooltip("공격 모션 시 재생되는 캐릭터 보이스 (랜덤 픽)")]
+    public AudioClip[] attackVoiceSounds;
+    [Tooltip("피격 시 재생되는 타격 사운드 (랜덤 픽)")]
+    public AudioClip[] hitSounds;
+    [Tooltip("피격 시 재생되는 캐릭터 보이스 (랜덤 픽)")]
+    public AudioClip[] hitVoiceSounds;
     public AudioClip chargeSounds;
     public AudioClip readySounds;
+
+    [Header("Sound Toggles")]
+    [Tooltip("공격 보이스 재생 여부")]
+    public bool playAttackVoice = true;
+    [Tooltip("피격 보이스 재생 여부")]
+    public bool playHitVoice = true;
+
+    [Header("Sound Volumes")]
+    [Range(0f, 1f)] public float attackVolume = 1f;
+    [Range(0f, 1f)] public float attackVoiceVolume = 1f;
+    [Range(0f, 1f)] public float hitVolume = 1f;
+    [Range(0f, 1f)] public float hitVoiceVolume = 1f;
+    [Range(0f, 1f)] public float chargeVolume = 1f;
+    [Range(0f, 1f)] public float readyVolume = 1f;
 
     // 히트박스 리셋용 스테이트 감시
     private int _prevStateHash;
 
     // 데미지 판정용 직전 HP (회복/리스폰 시 GetHit 트리거 오발 방지)
     private float _prevHealth = float.MaxValue;
+
+    // 근접무기 장착 시 공격 사운드를 덮어씌우기 위한 슬롯.
+    // null이면 캐릭터 기본 attackSounds(맨손 펀치)가 재생됨.
+    private UnifiedWeaponMelee _meleeOverride;
+
+    /// <summary>
+    /// 근접무기가 장착될 때 자기 자신을 등록한다.
+    /// 등록되면 HandleCombo에서 캐릭터 기본 펀치 대신 무기 swingSounds가 재생됨.
+    /// </summary>
+    public void SetMeleeWeapon(UnifiedWeaponMelee weapon) => _meleeOverride = weapon;
+
+    /// <summary>
+    /// 근접무기가 해제(만료/던지기/파괴)될 때 호출.
+    /// 등록된 무기가 자기 자신일 때만 슬롯을 비운다 — 다른 무기로 교체된 경우 오삭제 방지.
+    /// </summary>
+    public void ClearMeleeWeapon(UnifiedWeaponMelee weapon)
+    {
+        if (_meleeOverride == weapon) _meleeOverride = null;
+    }
 
     private void Awake()
     {
@@ -109,10 +148,21 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.SetTrigger("GetHit");
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(punchSounds);
-                audioSource.PlayOneShot(hitSounds);
+                PlayRandom(hitSounds, hitVolume);
+                if (playHitVoice) PlayRandom(hitVoiceSounds, hitVoiceVolume);
             }
         }
+    }
+
+    /// <summary>
+    /// 사운드 클립 배열에서 랜덤으로 하나를 골라 재생.
+    /// </summary>
+    private void PlayRandom(AudioClip[] clips, float volume = 1f)
+    {
+        if (audioSource == null) return;
+        if (clips == null || clips.Length == 0) return;
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        if (clip != null) audioSource.PlayOneShot(clip, volume);
     }
 
     private void HandleDie() => anim.SetBool("Die", true);
@@ -138,6 +188,15 @@ public class UnifiedCharacterView : MonoBehaviour
             anim.ResetTrigger("AttackTrigger");
             anim.SetInteger("ComboStep", step);
             anim.SetTrigger("AttackTrigger");
+
+            // 공격 모션 시작과 동시에 사운드 재생
+            // 근접무기 장착 중이면 무기 swingSounds, 아니면 캐릭터 기본 펀치
+            if (_meleeOverride != null)
+                _meleeOverride.PlaySwingSound();
+            else
+                PlayRandom(attackSounds, attackVolume);
+
+            if (playAttackVoice) PlayRandom(attackVoiceSounds, attackVoiceVolume);
         }
         else
         {
@@ -175,11 +234,11 @@ public class UnifiedCharacterView : MonoBehaviour
             if (chargeReadyEffect) chargeReadyEffect.SetActive(false);
             return;
         }
-        if (audioSource != null) audioSource.PlayOneShot(chargeSounds);
+        if (audioSource != null && chargeSounds != null) audioSource.PlayOneShot(chargeSounds, chargeVolume);
 
         if (isReady)
         {
-            if (audioSource != null) audioSource.PlayOneShot(readySounds);
+            if (audioSource != null && readySounds != null) audioSource.PlayOneShot(readySounds, readyVolume);
             if (chargingEffect) chargingEffect.SetActive(false);
             if (chargeReadyEffect) chargeReadyEffect.SetActive(true);
         }

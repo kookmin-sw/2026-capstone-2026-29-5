@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1836472802585025823}
   - component: {fileID: 5425811453541634093}
   - component: {fileID: 7529535631385424956}
+  - component: {fileID: -2209571831205297188}
   m_Layer: 3
   m_Name: Missile_Field
   m_TagString: Field
@@ -90,6 +91,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: ab2f8d706ad7392428be32c2d08ad035, type: 2}
+--- !u!114 &-2209571831205297188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4114549932321689632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: 08997492040f4664f8f0294528e08bac, type: 3}
+  pickupVolume: 1
 --- !u!1001 &8174486240602287867
 PrefabInstance:
   m_ObjectHideFlags: 0

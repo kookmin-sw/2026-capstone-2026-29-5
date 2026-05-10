@@ -106,6 +106,10 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 55
+  audioSource: {fileID: 0}
+  explosionSounds:
+  - {fileID: 8300000, guid: 7aca1a2ab95d73049a62b5bd8d4456d0, type: 3}
+  explosionVolume: 1
 --- !u!65 &604655094660640917
 BoxCollider:
   m_ObjectHideFlags: 0

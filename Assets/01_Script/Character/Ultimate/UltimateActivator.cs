@@ -80,10 +80,16 @@ public class UltimateActivator : NetworkBehaviour
     [Tooltip("슬로우/카메라 줌 유지 시간 (realtime 초)")]
     public float slowMotionDuration = 1.6f;
 
+    [Tooltip("슬로우 종료 후, 정상속도로 필살기 모션이 재생될 추가 시간 (그 동안 본인+타겟 입력 차단, 카메라 anchor 유지)")]
+    public float ultimateMotionDuration = 1.5f;
+
     [Tooltip("타겟의 Animator 도 같이 슬로우 적용")]
     public bool slowTargetAnim = true;
 
-    [Header("연출 - 타겟 입력 차단")]
+    [Header("연출 - 입력 차단")]
+    [Tooltip("연출 동안 본인의 StarterAssetsInputs / PlayerInput 비활성화 (R 누른 시점부터 모션 끝까지)")]
+    public bool blockSelfInput = true;
+
     [Tooltip("연출 동안 타겟의 StarterAssetsInputs / PlayerInput 비활성화 (이동/공격 입력 차단)")]
     public bool blockTargetInput = true;
 
@@ -107,6 +113,14 @@ public class UltimateActivator : NetworkBehaviour
     [Tooltip("필살기용 Animator 트리거 이름. CharacterHitBox.allowedStates 에 동일 state 이름 등록 필요")]
     public string ultimateAnimTrigger = "";
 
+    [Header("연출 - 궁극기 무기 (선택)")]
+    [Tooltip("궁극기 발동 시 장착할 전용 무기 프리팹.\n" +
+             "필수 컴포넌트: NetworkIdentity, UnifiedWeaponMelee, UnifiedWeaponEquipHandler.\n" +
+             "NetworkManager의 spawnPrefabs 리스트에 등록되어 있어야 클라이언트에서도 보임.\n" +
+             "프리팹의 ItemStatus.availableTime은 (slowMotionDuration + ultimateMotionDuration)보다\n" +
+             "충분히 크게 설정 권장 — 자체 lifeTimer가 ForceExpire 전에 만료되지 않도록.")]
+    public GameObject ultimateWeaponPrefab;
+
     [Header("참조 (비워두면 자동 검색)")]
     public UnifiedCharacterModel selfModel;
     public Animator selfAnimator;
@@ -121,6 +135,12 @@ public class UltimateActivator : NetworkBehaviour
     private Transform cachedVcamFollow;
     private Transform cachedVcamLookAt;
 
+    // 본인 입력 차단 복원용 캐시
+    private StarterAssetsInputs cachedSelfSAI;
+    private bool cachedSelfSAIEnabled;
+    private PlayerInput cachedSelfPI;
+    private bool cachedSelfPIEnabled;
+
     // 타겟 입력 차단 복원용 캐시
     private StarterAssetsInputs cachedTargetSAI;
     private bool cachedTargetSAIEnabled;
@@ -128,6 +148,9 @@ public class UltimateActivator : NetworkBehaviour
     private bool cachedTargetPIEnabled;
     private Rigidbody cachedTargetRb;
     private bool cachedTargetRbWasKinematic;
+
+    // 현재 활성화된 궁극기 무기 (서버/오프라인 권위에서만 ForceExpire 호출용으로 보관)
+    private GameObject _currentUltimateWeapon;
 
     // ─────────────────────────────────────────────
     //  바인딩 / 라이프사이클
@@ -155,12 +178,17 @@ public class UltimateActivator : NetworkBehaviour
         if (selfModel != null)
             selfModel.OnRespawn -= HandleRespawn;
 
-        // 안전장치: 도중에 비활성화돼도 Animator/카메라/타겟 입력 원복
+        // 안전장치: 도중에 비활성화돼도 Animator/카메라/입력 원복
         if (isPlaying)
         {
             if (selfAnimator != null) selfAnimator.speed = 1f;
+            RestoreSelfInput();
             RestoreTargetInput();
             RestoreCamera();
+
+            // 궁극기 무기도 즉시 정리 (서버/오프라인 권위에서만)
+            TryForceExpireUltimateWeapon();
+
             isPlaying = false;
         }
     }
@@ -196,9 +224,10 @@ public class UltimateActivator : NetworkBehaviour
 
         if (AuthorityGuard.IsOffline)
         {
-            // 오프라인: 즉시 실행
+            // 오프라인: 즉시 실행 (무기도 로컬 스폰)
             hasUsed = true;
-            StartCoroutine(PlayUltimateLocal(target));
+            GameObject weaponObj = SpawnUltimateWeaponLocal();
+            StartCoroutine(PlayUltimateLocal(target, weaponObj));
         }
         else
         {
@@ -232,14 +261,65 @@ public class UltimateActivator : NetworkBehaviour
         }
 
         hasUsed = true;                  // SyncVar
-        RpcPlayUltimate(targetId);
+
+        // 궁극기 무기 서버 스폰 → SetUser 안에서 RpcSetUser 발사하여 모든 클라에 자동 장착
+        GameObject weaponObj = SpawnUltimateWeaponServer();
+        NetworkIdentity weaponId = weaponObj != null
+            ? weaponObj.GetComponent<NetworkIdentity>()
+            : null;
+
+        RpcPlayUltimate(targetId, weaponId);
     }
 
     [ClientRpc]
-    private void RpcPlayUltimate(NetworkIdentity targetId)
+    private void RpcPlayUltimate(NetworkIdentity targetId, NetworkIdentity weaponId)
     {
         Transform t = targetId != null ? targetId.transform : null;
-        StartCoroutine(PlayUltimateLocal(t));
+        GameObject weapon = weaponId != null ? weaponId.gameObject : null;
+        StartCoroutine(PlayUltimateLocal(t, weapon));
+    }
+
+    // ─────────────────────────────────────────────
+    //  궁극기 무기 스폰 헬퍼
+    // ─────────────────────────────────────────────
+    /// <summary>오프라인 전용: 로컬 Instantiate + NetworkIdentity 비활성 + SetUser.</summary>
+    private GameObject SpawnUltimateWeaponLocal()
+    {
+        if (ultimateWeaponPrefab == null) return null;
+
+        GameObject weaponObj = Instantiate(ultimateWeaponPrefab, transform.position, Quaternion.identity);
+
+        // 오프라인에선 Mirror가 관리 안 하므로 NetworkIdentity 비활성 (UnifiedSetItem.HardenOfflineObject 패턴)
+        if (weaponObj.TryGetComponent(out NetworkIdentity nid))
+            nid.enabled = false;
+        if (!weaponObj.activeSelf) weaponObj.SetActive(true);
+
+        IPlayerWeapon ipw = weaponObj.GetComponent<IPlayerWeapon>();
+        if (ipw != null) ipw.SetUser(gameObject);
+
+        _currentUltimateWeapon = weaponObj;
+        return weaponObj;
+    }
+
+    /// <summary>서버 권위 전용: NetworkServer.Spawn 으로 모든 클라에 복제. SetUser → RpcSetUser 자동.</summary>
+    [Server]
+    private GameObject SpawnUltimateWeaponServer()
+    {
+        if (ultimateWeaponPrefab == null) return null;
+
+        GameObject weaponObj = Instantiate(ultimateWeaponPrefab, transform.position, Quaternion.identity);
+
+        NetworkIdentity ownerId = GetComponent<NetworkIdentity>();
+        if (ownerId != null)
+            NetworkServer.Spawn(weaponObj, ownerId.connectionToClient);
+        else
+            NetworkServer.Spawn(weaponObj);
+
+        IPlayerWeapon ipw = weaponObj.GetComponent<IPlayerWeapon>();
+        if (ipw != null) ipw.SetUser(gameObject);
+
+        _currentUltimateWeapon = weaponObj;
+        return weaponObj;
     }
 
     // ─────────────────────────────────────────────
@@ -309,7 +389,7 @@ public class UltimateActivator : NetworkBehaviour
     // ─────────────────────────────────────────────
     //  연출 (모든 클라에서 호출됨)
     // ─────────────────────────────────────────────
-    private IEnumerator PlayUltimateLocal(Transform target)
+    private IEnumerator PlayUltimateLocal(Transform target, GameObject ultimateWeapon)
     {
         isPlaying = true;
 
@@ -357,7 +437,10 @@ public class UltimateActivator : NetworkBehaviour
             if (targetAnim != null) targetAnim.speed = slowMotionAnimSpeed;
         }
 
-        // 3-2) 타겟 입력 차단 (이동/공격 등 모든 액션 입력)
+        // 3-2) 본인 입력 차단 (이동/공격 등 - R 누른 시점부터 모션 끝까지)
+        BlockSelfInput();
+
+        // 3-3) 타겟 입력 차단 (이동/공격 등 모든 액션 입력)
         if (blockTargetInput && target != null)
         {
             cachedTargetSAI = target.GetComponentInChildren<StarterAssetsInputs>();
@@ -380,7 +463,7 @@ public class UltimateActivator : NetworkBehaviour
             }
         }
 
-        // 3-3) 타겟 Rigidbody velocity 영점화 (관성 미끄러짐 방지)
+        // 3-4) 타겟 Rigidbody velocity 영점화 (관성 미끄러짐 방지)
         if (zeroTargetVelocity && target != null)
         {
             cachedTargetRb = target.GetComponentInChildren<Rigidbody>();
@@ -399,16 +482,78 @@ public class UltimateActivator : NetworkBehaviour
             selfAnimator.SetTrigger(ultimateAnimTrigger);
         }
 
-        // 5) 슬로우 유지
+        // 5) Phase 1 — 슬로우 유지 (양쪽 슬로우 + 입력 차단)
         yield return new WaitForSecondsRealtime(slowMotionDuration);
 
-        // 6) 복원
+        // 6) 슬로우 해제 (Animator 정상속도로 모션 진행)
         if (selfAnimator != null) selfAnimator.speed = 1f;
         if (targetAnim != null) targetAnim.speed = 1f;
 
+        // 7) Phase 2 — 정상속도 모션 진행 (카메라 anchor 유지, 입력 차단 유지)
+        yield return new WaitForSecondsRealtime(ultimateMotionDuration);
+
+        // 7-2) 궁극기 무기 만료 — 서버/오프라인 권위에서만 호출
+        //      (RpcUnequip 으로 모든 클라가 UnequipHandler → 기본 무기 복원)
+        TryForceExpireUltimateWeapon();
+
+        // 8) 모두 복원
+        RestoreSelfInput();
         RestoreTargetInput();
         RestoreCamera();
         isPlaying = false;
+    }
+
+    /// <summary>
+    /// 보관 중인 궁극기 무기에 ForceExpire 를 호출해 즉시 만료시킨다.
+    /// 서버/오프라인 권위에서만 의미 있음. 다른 클라이언트에서는 _currentUltimateWeapon 가 비어 있음.
+    /// </summary>
+    private void TryForceExpireUltimateWeapon()
+    {
+        if (_currentUltimateWeapon == null) return;
+
+        UnifiedWeaponMelee melee = _currentUltimateWeapon.GetComponent<UnifiedWeaponMelee>();
+        if (melee != null) melee.ForceExpire();
+
+        _currentUltimateWeapon = null;
+    }
+
+    /// <summary>본인의 StarterAssetsInputs / PlayerInput 비활성화 + 잔류 입력 클리어</summary>
+    private void BlockSelfInput()
+    {
+        if (!blockSelfInput) return;
+
+        cachedSelfSAI = GetComponentInChildren<StarterAssetsInputs>();
+        if (cachedSelfSAI != null)
+        {
+            cachedSelfSAIEnabled = cachedSelfSAI.enabled;
+            cachedSelfSAI.move = Vector2.zero;
+            cachedSelfSAI.look = Vector2.zero;
+            cachedSelfSAI.jump = false;
+            cachedSelfSAI.sprint = false;
+            cachedSelfSAI.enabled = false;
+        }
+
+        cachedSelfPI = GetComponentInChildren<PlayerInput>();
+        if (cachedSelfPI != null)
+        {
+            cachedSelfPIEnabled = cachedSelfPI.enabled;
+            cachedSelfPI.enabled = false;
+        }
+    }
+
+    /// <summary>본인 Input 캐싱값으로 복원</summary>
+    private void RestoreSelfInput()
+    {
+        if (cachedSelfSAI != null)
+        {
+            cachedSelfSAI.enabled = cachedSelfSAIEnabled;
+            cachedSelfSAI = null;
+        }
+        if (cachedSelfPI != null)
+        {
+            cachedSelfPI.enabled = cachedSelfPIEnabled;
+            cachedSelfPI = null;
+        }
     }
 
     /// <summary>타겟 Input/Rigidbody 캐싱값으로 복원 (원래 Disable이었으면 그대로 둠)</summary>

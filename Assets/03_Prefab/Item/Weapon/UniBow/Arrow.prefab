@@ -136,6 +136,10 @@ MonoBehaviour:
   effectIndex: 3
   hitEffectPrefab: {fileID: 271054424957760564, guid: 1468eeb0963ddad41909c04ad8af0aee, type: 3}
   effectDuration: 2
+  audioSource: {fileID: 0}
+  attackHitSounds:
+  - {fileID: 8300000, guid: 4e8ce8aaef232e94d8208162d93af45a, type: 3}
+  attackHitVolume: 1
   allowedStates: []
 --- !u!114 &5219123303811581019
 MonoBehaviour:

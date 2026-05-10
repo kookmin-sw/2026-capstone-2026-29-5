@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2911249116825023033}
   - component: {fileID: 6184491618255921969}
   - component: {fileID: -612567035375950044}
+  - component: {fileID: -3751069622526094733}
   m_Layer: 3
   m_Name: Gravity Controller_Field
   m_TagString: Field
@@ -90,6 +91,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: 28996c6f4b540a64da44a68dd7e5f817, type: 2}
+--- !u!114 &-3751069622526094733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2464827901036963092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: e9663f2e8079d0d4a9bf18cead83635f, type: 3}
+  pickupVolume: 0.81
 --- !u!1001 &4745301719246522307
 PrefabInstance:
   m_ObjectHideFlags: 0

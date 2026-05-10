@@ -81,3 +81,9 @@ MonoBehaviour:
   warningDecalPrefab: {fileID: 4428390792654938517, guid: ec28069f62d76e0439fc1cf0e8267115, type: 3}
   explosionEffectPrefab: {fileID: 4438388044275851841, guid: 91cf2aba1a3dd61419861eaf069a74f7, type: 3}
   explosionLifetime: 0.2
+  audioSource: {fileID: 0}
+  warningSounds: []
+  warningVolume: 1
+  explosionSounds:
+  - {fileID: 8300000, guid: 7aca1a2ab95d73049a62b5bd8d4456d0, type: 3}
+  explosionVolume: 1

@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 7336040961671342022}
   - component: {fileID: 808025193537265223}
   - component: {fileID: 8454405645291454687}
+  - component: {fileID: 1518678316133067558}
   m_Layer: 3
   m_Name: Winged_Shoes_Field
   m_TagString: Passive
@@ -205,6 +206,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemAsset: {fileID: 11400000, guid: c1804edbccda6334fa37dd95d011e4ed, type: 2}
+--- !u!114 &1518678316133067558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2902114970343045663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451ee575eef265d49aaef6d4c580bead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupSounds:
+  - {fileID: 8300000, guid: 70aabfd71ec0b09489f78b8c85aad64d, type: 3}
+  pickupVolume: 1
 --- !u!1 &3493330180263371013
 GameObject:
   m_ObjectHideFlags: 0
