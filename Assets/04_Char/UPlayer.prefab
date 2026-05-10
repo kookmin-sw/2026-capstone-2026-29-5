@@ -61,6 +61,7 @@ GameObject:
   - component: {fileID: -3919388257179207740}
   - component: {fileID: 543628534653413141}
   - component: {fileID: 8933606834556428448}
+  - component: {fileID: 628616068803475744}
   m_Layer: 6
   m_Name: UPlayer
   m_TagString: Player
@@ -405,11 +406,22 @@ MonoBehaviour:
   leftHandHitbox: {fileID: 1344337710141032076}
   rightFootHitbox: {fileID: 8028383408365553793}
   leftFootHitbox: {fileID: 1077588120744126995}
-  audioSource: {fileID: 0}
-  punchSounds: {fileID: 8300000, guid: 81ff5a48a8891db449eea71985570f52, type: 3}
-  hitSounds: {fileID: 0}
+  audioSource: {fileID: 5858724634432584369}
+  attackSounds:
+  - {fileID: 8300000, guid: 114e6cf8b0bebb94db9dba1fd2456a26, type: 3}
+  attackVoiceSounds: []
+  hitSounds: []
+  hitVoiceSounds: []
   chargeSounds: {fileID: 0}
   readySounds: {fileID: 0}
+  playAttackVoice: 1
+  playHitVoice: 1
+  attackVolume: 0.5
+  attackVoiceVolume: 1
+  hitVolume: 1
+  hitVoiceVolume: 1
+  chargeVolume: 1
+  readyVolume: 1
 --- !u!114 &7273128938097549508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +457,14 @@ MonoBehaviour:
   CrouchSpeed: 3
   JumpMoveSpeed: 6
   AttackMoveSpeed: 6
+  EnableDistanceSpeedBoost: 1
+  ChaseBoostMinDistance: 5
+  ChaseBoostMaxDistance: 20
+  ChaseBoostMaxMultiplier: 1.4
+  ChaseBoostCurveExponent: 0.7
+  ChaseBoostOnlyWhenApproaching: 1
+  ChaseBoostScaleByAngle: 1
+  ChaseBoostDisableDuringAttack: 1
   ShiftCooldown: 1
   ShiftDashDistance: 3
   ShiftDashDuration: 0.3
@@ -608,7 +628,9 @@ MonoBehaviour:
   blockDuringActions: 1
   slowMotionAnimSpeed: 0.15
   slowMotionDuration: 1.6
+  ultimateMotionDuration: 1.5
   slowTargetAnim: 1
+  blockSelfInput: 1
   blockTargetInput: 1
   zeroTargetVelocity: 1
   lateralOffset: 2.5
@@ -616,8 +638,25 @@ MonoBehaviour:
   lookAtHeightOffset: 1.4
   distanceBackoff: 0.4
   ultimateAnimTrigger: Ultimate
+  ultimateWeaponPrefab: {fileID: 0}
   selfModel: {fileID: -8163085030667433099}
   selfAnimator: {fileID: 3873752212823095745}
+--- !u!114 &628616068803475744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046033076753342609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bcf87f466694ce4b869b32f0e04db09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfModel: {fileID: -8163085030667433099}
+  blockStarterAssetsInputs: 1
+  blockPlayerInput: 1
+  verbose: 0
 --- !u!1001 &5164279409534725719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1341,6 +1380,10 @@ MonoBehaviour:
   effectIndex: 3
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
+  audioSource: {fileID: 5858724634432584369}
+  attackHitSounds:
+  - {fileID: 8300000, guid: 30de0aa9c1ae2f94aad627d56cf60226, type: 3}
+  attackHitVolume: 1
   allowedStates: []
 --- !u!4 &1548581317186969206 stripped
 Transform:
@@ -1374,6 +1417,10 @@ MonoBehaviour:
   effectIndex: 1
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 2
+  audioSource: {fileID: 5858724634432584369}
+  attackHitSounds:
+  - {fileID: 8300000, guid: a4e0eeb6415940e4ea4c51bc30599dad, type: 3}
+  attackHitVolume: 1
   allowedStates:
   - Strong Attack
   - Ultimate
@@ -1425,6 +1472,10 @@ MonoBehaviour:
   effectIndex: 0
   hitEffectPrefab: {fileID: 7775297073632181632, guid: 7eefe271218ab3e4f816adc8b0c7278c, type: 3}
   effectDuration: 1
+  audioSource: {fileID: 5858724634432584369}
+  attackHitSounds:
+  - {fileID: 8300000, guid: 71534a05c8122054b8b9f10fd16462cb, type: 3}
+  attackHitVolume: 1
   allowedStates: []
 --- !u!65 &9029192443860563999
 BoxCollider:
@@ -1490,6 +1541,10 @@ MonoBehaviour:
   effectIndex: 2
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
+  audioSource: {fileID: 5858724634432584369}
+  attackHitSounds:
+  - {fileID: 8300000, guid: 30de0aa9c1ae2f94aad627d56cf60226, type: 3}
+  attackHitVolume: 1
   allowedStates:
   - Combo Attack 4
 --- !u!114 &5339388031233793170 stripped

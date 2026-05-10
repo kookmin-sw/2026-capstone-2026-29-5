@@ -384,7 +384,7 @@ MonoBehaviour:
   readySounds: {fileID: 0}
   playAttackVoice: 1
   playHitVoice: 1
-  attackVolume: 1
+  attackVolume: 0.5
   attackVoiceVolume: 1
   hitVolume: 1
   hitVoiceVolume: 1
@@ -410,6 +410,14 @@ MonoBehaviour:
   CrouchSpeed: 3
   JumpMoveSpeed: 6
   AttackMoveSpeed: 6
+  EnableDistanceSpeedBoost: 1
+  ChaseBoostMinDistance: 5
+  ChaseBoostMaxDistance: 20
+  ChaseBoostMaxMultiplier: 1.4
+  ChaseBoostCurveExponent: 0.7
+  ChaseBoostOnlyWhenApproaching: 1
+  ChaseBoostScaleByAngle: 1
+  ChaseBoostDisableDuringAttack: 1
   ShiftCooldown: 1
   ShiftDashDistance: 5
   ShiftDashDuration: 0.3
@@ -1617,7 +1625,7 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 5910542040085210735}
     - targetCorrespondingSourceObject: {fileID: 2477230563312048367, guid: 57ae2734981a5e64db0d48f300b3e636, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 4715510475125676275}
     - targetCorrespondingSourceObject: {fileID: 5154544203768460773, guid: 57ae2734981a5e64db0d48f300b3e636, type: 3}
       insertIndex: -1
@@ -1666,7 +1674,7 @@ MonoBehaviour:
   effectIndex: 3
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1557915836691104627}
   attackHitSounds:
   - {fileID: 8300000, guid: 30de0aa9c1ae2f94aad627d56cf60226, type: 3}
   attackHitVolume: 1
@@ -1746,7 +1754,7 @@ MonoBehaviour:
   effectIndex: 2
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1557915836691104627}
   attackHitSounds:
   - {fileID: 8300000, guid: 30de0aa9c1ae2f94aad627d56cf60226, type: 3}
   attackHitVolume: 1

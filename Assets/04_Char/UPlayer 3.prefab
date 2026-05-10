@@ -373,11 +373,23 @@ MonoBehaviour:
   leftHandHitbox: {fileID: 4360932330215328474}
   rightFootHitbox: {fileID: 0}
   leftFootHitbox: {fileID: 0}
-  audioSource: {fileID: 0}
-  punchSounds: {fileID: 0}
-  hitSounds: {fileID: 0}
+  audioSource: {fileID: 6562449300323122143}
+  attackSounds:
+  - {fileID: 8300000, guid: efeb39e3f65164d42953ecd18872abfd, type: 3}
+  attackVoiceSounds: []
+  hitSounds:
+  - {fileID: 0}
+  hitVoiceSounds: []
   chargeSounds: {fileID: 0}
   readySounds: {fileID: 0}
+  playAttackVoice: 1
+  playHitVoice: 1
+  attackVolume: 1
+  attackVoiceVolume: 1
+  hitVolume: 1
+  hitVoiceVolume: 1
+  chargeVolume: 1
+  readyVolume: 1
 --- !u!114 &1375265052286321119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,6 +410,14 @@ MonoBehaviour:
   CrouchSpeed: 3
   JumpMoveSpeed: 6
   AttackMoveSpeed: 6
+  EnableDistanceSpeedBoost: 1
+  ChaseBoostMinDistance: 5
+  ChaseBoostMaxDistance: 20
+  ChaseBoostMaxMultiplier: 1.4
+  ChaseBoostCurveExponent: 0.7
+  ChaseBoostOnlyWhenApproaching: 1
+  ChaseBoostScaleByAngle: 1
+  ChaseBoostDisableDuringAttack: 1
   ShiftCooldown: 1
   ShiftDashDistance: 5
   ShiftDashDuration: 0.3
@@ -561,7 +581,9 @@ MonoBehaviour:
   blockDuringActions: 1
   slowMotionAnimSpeed: 0.15
   slowMotionDuration: 1.6
+  ultimateMotionDuration: 1.5
   slowTargetAnim: 1
+  blockSelfInput: 1
   blockTargetInput: 1
   zeroTargetVelocity: 1
   lateralOffset: 2.5
@@ -569,6 +591,7 @@ MonoBehaviour:
   lookAtHeightOffset: 1.4
   distanceBackoff: 0.4
   ultimateAnimTrigger: Ultimate
+  ultimateWeaponPrefab: {fileID: 0}
   selfModel: {fileID: 5743782909195610571}
   selfAnimator: {fileID: 3138135253671594071}
 --- !u!1 &2316993326076443843
@@ -611,21 +634,45 @@ PrefabInstance:
     m_TransformParent: {fileID: 732492846352140256}
     m_Modifications:
     - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 6562449300323122143}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.size
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: attackHitSounds.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[1]
       value: Ultimate
       objectReference: {fileID: 0}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: attackHitSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 71534a05c8122054b8b9f10fd16462cb, type: 3}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 6562449300323122143}
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.size
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: attackHitSounds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[5]
       value: Ultimate
       objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: attackHitSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: fa06bbcddc1c0744c911ba01685932e7, type: 3}
     - target: {fileID: 3151523538064319340, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: animator
       value: 

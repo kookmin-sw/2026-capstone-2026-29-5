@@ -39,6 +39,33 @@ namespace StarterAssets
         public float JumpMoveSpeed = 4.0f;
         [Tooltip("공격 중 이동 속도")] public float AttackMoveSpeed = 1.0f;
 
+        [Header("Distance-Based Chase Boost (추격 거리 보정)")]
+        [Tooltip("거리 기반 추격 속도 보정 활성화")]
+        public bool EnableDistanceSpeedBoost = true;
+
+        [Tooltip("이 거리 안에서는 보정 OFF (격투 거리 보호)")]
+        public float ChaseBoostMinDistance = 5.0f;
+
+        [Tooltip("이 거리에서 최대 보정 배율 도달")]
+        public float ChaseBoostMaxDistance = 20.0f;
+
+        [Tooltip("최대 속도 배율 (1.4 = 40% 더 빠름)")]
+        [Range(1.0f, 3.0f)]
+        public float ChaseBoostMaxMultiplier = 1.4f;
+
+        [Tooltip("보정 곡선 지수. 1=선형, <1 빠르게 증가(ease-out), >1 천천히 증가(ease-in)")]
+        [Range(0.1f, 3.0f)]
+        public float ChaseBoostCurveExponent = 0.7f;
+
+        [Tooltip("상대를 향해 이동할 때만 보정 적용 (체크 시 도망자는 보정 X)")]
+        public bool ChaseBoostOnlyWhenApproaching = true;
+
+        [Tooltip("접근 각도에 따라 보정량 조절. 정면일수록 강하게.")]
+        public bool ChaseBoostScaleByAngle = true;
+
+        [Tooltip("공격 모션 중에는 보정 OFF (콤보 거리감 보호)")]
+        public bool ChaseBoostDisableDuringAttack = true;
+
         [Header("Shift Dash Settings")]
         public float ShiftCooldown = 1.0f;
         [Tooltip("대시로 이동할 고정 거리 (m)")] public float ShiftDashDistance = 5.0f;
@@ -93,6 +120,14 @@ namespace StarterAssets
         private float _terminalVelocity = 53.0f;
 
         [SyncVar] private float _speedMultiplier = 1f; // 아이템용
+
+        // 거리 기반 추격 보정용
+        private UnifiedThirdPersonController _opponent;
+        private float _opponentSearchTimer = 0f;
+        private const float _opponentSearchInterval = 0.5f;
+        private float _currentChaseBoost = 1f;
+        /// <summary>현재 적용 중인 추격 거리 보정 배율 (1.0 = 보정 없음). 디버그/UI 용.</summary>
+        public float CurrentChaseBoost => _currentChaseBoost;
 
         // timeout
         private float _jumpTimeoutDelta;
@@ -324,6 +359,10 @@ namespace StarterAssets
 
             targetSpeed *= _speedMultiplier;
 
+            // 거리 기반 추격 보정 (상대를 향해 이동 중일 때 거리에 비례해 빨라짐)
+            _currentChaseBoost = CalculateChaseBoostMultiplier();
+            targetSpeed *= _currentChaseBoost;
+
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -521,6 +560,93 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        // ============================================================
+        // 거리 기반 추격 보정
+        // ============================================================
+        /// <summary>
+        /// 1대1 매치에서 상대 캐릭터를 검색해 캐싱한다.
+        /// 네트워크 모드에선 원격 플레이어가 늦게 스폰될 수 있으므로 주기적으로 재시도.
+        /// </summary>
+        private void TryFindOpponent()
+        {
+            // 이미 유효한 상대를 들고 있으면 검색 생략
+            if (_opponent != null) return;
+
+            _opponentSearchTimer -= Time.deltaTime;
+            if (_opponentSearchTimer > 0f) return;
+            _opponentSearchTimer = _opponentSearchInterval;
+
+            var all = FindObjectsOfType<UnifiedThirdPersonController>();
+            for (int i = 0; i < all.Length; i++)
+            {
+                if (all[i] != null && all[i] != this)
+                {
+                    _opponent = all[i];
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 상대와의 거리에 따라 이동 속도 배율을 계산한다.
+        /// - 임계 거리 안에선 1.0 (보정 없음)
+        /// - 임계 거리 ~ 최대 거리 사이에서 곡선 보간으로 증가
+        /// - 최대 거리 이상에선 ChaseBoostMaxMultiplier 로 캡
+        /// - ChaseBoostOnlyWhenApproaching 옵션 시 상대 방향 이동일 때만 적용
+        /// </summary>
+        private float CalculateChaseBoostMultiplier()
+        {
+            if (!EnableDistanceSpeedBoost) return 1f;
+
+            // 공격 모션 중엔 거리감/콤보 보호 위해 보정 OFF
+            if (ChaseBoostDisableDuringAttack && _hasAnimator)
+            {
+                var stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+                if (stateInfo.IsTag("Attack") || stateInfo.IsTag("Strong Attack")) return 1f;
+            }
+
+            TryFindOpponent();
+            if (_opponent == null) return 1f;
+
+            // XZ 평면 거리 (수직 거리는 무시)
+            Vector3 toOpponent = _opponent.transform.position - transform.position;
+            toOpponent.y = 0f;
+            float distance = toOpponent.magnitude;
+
+            if (distance <= ChaseBoostMinDistance) return 1f;
+
+            // 임계 거리 ~ 최대 거리 정규화
+            float range = Mathf.Max(0.0001f, ChaseBoostMaxDistance - ChaseBoostMinDistance);
+            float t = Mathf.Clamp01((distance - ChaseBoostMinDistance) / range);
+            // 곡선 적용 (기본 ease-out: exponent < 1 → 임계 직후 빠르게 보정 들어옴)
+            float curved = Mathf.Pow(t, ChaseBoostCurveExponent);
+            float bonus = curved * (ChaseBoostMaxMultiplier - 1f);
+
+            // 상대를 향해 이동 중일 때만 적용 (도망자는 보정 X)
+            if (ChaseBoostOnlyWhenApproaching)
+            {
+                if (_input == null || _input.move == Vector2.zero) return 1f;
+                if (toOpponent.sqrMagnitude < 0.0001f) return 1f;
+
+                Vector3 toOpponentDir = toOpponent / distance;
+                Vector3 moveDir = Quaternion.Euler(0f, _targetRotation, 0f) * Vector3.forward;
+                moveDir.y = 0f;
+                if (moveDir.sqrMagnitude < 0.0001f) return 1f;
+                moveDir.Normalize();
+
+                float dot = Vector3.Dot(moveDir, toOpponentDir);
+                if (dot <= 0f) return 1f; // 멀어지거나 직각 이동 → 보정 없음
+
+                if (ChaseBoostScaleByAngle)
+                {
+                    // 정면(dot=1)일수록 강하게, 측면(dot=0)에 가까울수록 약하게
+                    bonus *= dot;
+                }
+            }
+
+            return 1f + bonus;
         }
 
         // 아이템에서 호출하는 속도 배율
