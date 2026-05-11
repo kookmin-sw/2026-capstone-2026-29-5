@@ -37,7 +37,7 @@ public class UnifiedItemManager : NetworkBehaviour
     [SyncVar] private bool hasActive = false;
     [SyncVar] private bool activeUsed = false;
 
-    [SyncVar] private GameObject currentWeaponObject; // 현재 보유 무기 아이템.
+    private GameObject currentWeaponObject; // 현재 보유 무기 아이템.
     [SyncVar] private int passiveCount = 0; // 클라이언트 동기화용
 
     [SyncVar] public float weaponAvailable;
