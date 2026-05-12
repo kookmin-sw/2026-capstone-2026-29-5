@@ -51,13 +51,6 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
     [Tooltip("총 본체의 히트박스(근접 타격용). 비워두면 사용 안 함.")]
     [SerializeField] private CharacterHitBox weaponHitbox;
 
-    [Header("에임 레이캐스트")]
-    [Tooltip("레이캐스트에서 제외할 레이어.")]
-    [SerializeField] private LayerMask aimLayerMask = ~0;
-
-    [SerializeField] private float aimMinDistance = 2.0f;
-    [SerializeField] private float aimMaxDistance = 300f;
-
     [Header("Sound Settings")]
     public AudioSource audioSource;
     [Tooltip("발사 순간 재생되는 사운드 (랜덤 픽)")]
@@ -363,7 +356,10 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
             // 장전된 총알이 없으면 발사 불가
             if (loadedBulletObj == null) return;
 
-            Vector3 aimDir = GetCameraAimDirection();
+            // 발사 방향: 소유자가 바라보는 방향.
+            // 에임 모드에서 owner의 yaw가 카메라 yaw로 정렬되므로 화면 정중앙 시선과 거의 일치한다.
+            // 카메라 raycast 방식보다 안정적 — 가까운 콜라이더에 맞아 방향이 튀는 문제 없음.
+            Vector3 aimDir = owner != null ? owner.transform.forward : transform.forward;
 
             if (AuthorityGuard.IsOffline) ShotLocal(aimDir);
             else CmdShot(aimDir);
@@ -451,9 +447,11 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
         PlayShootSound();
 
         // 발사 애니메이션 트리거
+        Debug.Log($"[UnifiedWeaponTazorGun] ShotLocal: owner={(owner != null ? owner.name : "NULL")}");
         if (owner != null)
         {
             var model = owner.GetComponent<ICharacterModel>();
+            Debug.Log($"[UnifiedWeaponTazorGun] ShotLocal: model={(model != null ? model.GetType().Name : "NULL")}");
             if (model != null) model.RequestGunShoot();
         }
 
@@ -534,9 +532,11 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
         loadedBullet.Launch(direction);
 
         // 발사 애니메이션 트리거 (서버 권한자 측에서 모델에 요청 → SyncVar로 모든 클라이언트 전파)
+        Debug.Log($"[UnifiedWeaponTazorGun] CmdShot: owner={(owner != null ? owner.name : "NULL")}");
         if (owner != null)
         {
             var model = owner.GetComponent<ICharacterModel>();
+            Debug.Log($"[UnifiedWeaponTazorGun] CmdShot: model={(model != null ? model.GetType().Name : "NULL")}");
             if (model != null) model.RequestGunShoot();
         }
 
@@ -561,34 +561,6 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
     private void RpcOnShot()
     {
         PlayShootSound();
-    }
-
-    /// <summary>
-    /// 화면 정중앙에서 레이캐스트로 에임 지점을 찾고,
-    /// nockPoint(총구)에서 그 지점으로 향하는 방향을 반환.
-    /// </summary>
-    private Vector3 GetCameraAimDirection()
-    {
-        Camera cam = Camera.main;
-        if (cam == null)
-        {
-            Transform sp = nockPoint != null ? nockPoint : transform;
-            return (sp.rotation * Quaternion.Euler(followRotationOffset)) * Vector3.forward;
-        }
-
-        Ray aimRay = cam.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f));
-
-        Vector3 rayOrigin = aimRay.origin + aimRay.direction * aimMinDistance;
-        float rayDist = Mathf.Max(1f, aimMaxDistance - aimMinDistance);
-
-        Vector3 aimPoint;
-        if (Physics.Raycast(rayOrigin, aimRay.direction, out RaycastHit hit, rayDist, aimLayerMask))
-            aimPoint = hit.point;
-        else
-            aimPoint = aimRay.origin + aimRay.direction * aimMaxDistance;
-
-        Transform spawnPoint = nockPoint != null ? nockPoint : transform;
-        return (aimPoint - spawnPoint.position).normalized;
     }
 
     private void PlayShootSound()
