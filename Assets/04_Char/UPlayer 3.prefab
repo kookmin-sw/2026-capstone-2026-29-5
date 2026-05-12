@@ -373,6 +373,8 @@ MonoBehaviour:
   leftHandHitbox: {fileID: 4360932330215328474}
   rightFootHitbox: {fileID: 0}
   leftFootHitbox: {fileID: 0}
+  stunBoolParam: Stunned
+  stunStarterInputs: {fileID: 0}
   audioSource: {fileID: 6562449300323122143}
   attackSounds:
   - {fileID: 8300000, guid: efeb39e3f65164d42953ecd18872abfd, type: 3}
@@ -673,6 +675,50 @@ PrefabInstance:
       propertyPath: attackHitSounds.Array.data[0]
       value: 
       objectReference: {fileID: 8300000, guid: fa06bbcddc1c0744c911ba01685932e7, type: 3}
+    - target: {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Height
+      value: 1.8282849
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Radius
+      value: 0.14840987
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.x
+      value: -0.0000005114044
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.y
+      value: 0.73202515
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.z
+      value: 0.00000094172
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Size.x
+      value: 0.35140592
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Size.y
+      value: 1.6292751
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Size.z
+      value: 0.31779638
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.x
+      value: -0.0000003248252
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.y
+      value: 0.6236038
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147874498375454833, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: m_Center.z
+      value: 0.0000015702169
+      objectReference: {fileID: 0}
     - target: {fileID: 3151523538064319340, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: animator
       value: 
