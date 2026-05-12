@@ -24,8 +24,8 @@ public class UnifiedCharacterView : MonoBehaviour
     public CharacterHitBox leftFootHitbox;
 
     [Header("스턴 설정")]
-    [Tooltip("Animator의 스턴 Bool 파라미터 이름. 기본값 'SS_Stun'.")]
-    [SerializeField] private string stunBoolParam = "SS_Stun";
+    [Tooltip("Animator의 스턴 Bool 파라미터 이름")]
+    [SerializeField] private string stunBoolParam = "Stunned";
 
     [Tooltip("스턴 중 비활성화할 StarterAssetsInputs. 비워두면 자동 탐색.")]
     [SerializeField] private StarterAssetsInputs stunStarterInputs;
@@ -275,7 +275,9 @@ public class UnifiedCharacterView : MonoBehaviour
     /// </summary>
     private void HandleGunShoot()
     {
-        anim.SetTrigger("Gun");
+        Debug.Log($"[UnifiedCharacterView] HandleGunShoot 진입. HasGun={anim.GetBool("HasGun")}, " +
+                  $"current state hash={anim.GetCurrentAnimatorStateInfo(0).fullPathHash}");
+        anim.SetTrigger("GunShot");
     }
 
     // -------- 스턴 핸들러 --------

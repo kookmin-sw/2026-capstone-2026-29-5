@@ -64,6 +64,12 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
     public AudioClip[] shootSounds;
     [Range(0f, 1f)] public float shootVolume = 1f;
 
+    [Header("수명 종료 지연")]
+    [Tooltip("마지막 발사(usedChance == useableTime) 후 무기 파괴까지의 지연 시간(초). " +
+             "발사 애니메이션과 마지막 총알 비행을 위해 여유를 두려면 1~2초 권장. " +
+             "0이면 즉시 파괴. availableTime 자연 만료에는 적용되지 않음.")]
+    [SerializeField] private float expireDelayAfterLastShot = 1.0f;
+
     [Header("에임 보정")]
     [SerializeField] private float aimYawOffset = 0f;
 
@@ -83,6 +89,9 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
 
     // 첫 장전 완료 여부
     private bool _initialChargeStarted;
+
+    // 횟수 소진으로 인한 지연 종료 진행 중 (중복 코루틴 방지)
+    private bool _expireScheduled;
 
     private bool IsLocallyMine => AuthorityGuard.IsOffline || isOwned;
     private bool HasAuthorityRole => AuthorityGuard.IsOffline || isServer;
@@ -291,10 +300,46 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
         if (itemStat == null) return;
         lifeTimer += Time.deltaTime;
 
-        if (lifeTimer > itemStat.availableTime || usedChance >= itemStat.useableTime)
+        // availableTime 자연 만료: 즉시 파괴 (기존 동작 유지)
+        if (lifeTimer > itemStat.availableTime)
         {
             ExpireAndDestroy();
+            return;
         }
+
+        // 횟수 소진: 마지막 발사 애니메이션·총알 비행 시간을 위해 지연 후 파괴.
+        // ShotLocal/CmdShot의 발사 후 분기에서 ScheduleExpire를 호출하므로 보통 여기는 안 탄다.
+        // 외부에서 usedChance가 다른 경로로 증가했거나 발사 분기가 누락된 경우의 안전망.
+        if (usedChance >= itemStat.useableTime && !_expireScheduled)
+        {
+            ScheduleExpire();
+        }
+    }
+
+    /// <summary>
+    /// 횟수 소진 시 호출. 즉시 파괴하지 않고 expireDelayAfterLastShot 후에 파괴한다.
+    /// 발사 애니메이션 재생과 마지막 총알 비행을 위한 여유 시간 확보.
+    /// 권한자(서버/오프라인)에서만 의미가 있고, 중복 호출은 _expireScheduled로 차단.
+    /// </summary>
+    private void ScheduleExpire()
+    {
+        if (_expireScheduled) return;
+        _expireScheduled = true;
+
+        if (expireDelayAfterLastShot <= 0f)
+        {
+            ExpireAndDestroy();
+            return;
+        }
+
+        StartCoroutine(ExpireAfterDelayCoroutine(expireDelayAfterLastShot));
+    }
+
+    private System.Collections.IEnumerator ExpireAfterDelayCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (this == null) yield break;
+        ExpireAndDestroy();
     }
 
     /// <summary>
@@ -416,10 +461,14 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
         loadedBulletObj = null;
         usedChance++;
 
-        // 횟수가 남았으면 다음 발 자동 장전
+        // 횟수가 남았으면 다음 발 자동 장전, 소진됐으면 지연 후 파괴 스케줄
         if (itemStat != null && usedChance < itemStat.useableTime)
         {
             BeginChargeLocal();
+        }
+        else
+        {
+            ScheduleExpire();
         }
     }
 
@@ -497,10 +546,14 @@ public class UnifiedWeaponTazorGun : NetworkBehaviour, IPlayerWeapon
 
         RpcOnShot();
 
-        // 횟수가 남았으면 다음 발 자동 장전 (서버에서 즉시)
+        // 횟수가 남았으면 다음 발 자동 장전 (서버에서 즉시), 소진됐으면 지연 후 파괴 스케줄
         if (itemStat != null && usedChance < itemStat.useableTime)
         {
             BeginChargeServer();
+        }
+        else
+        {
+            ScheduleExpire();
         }
     }
 
