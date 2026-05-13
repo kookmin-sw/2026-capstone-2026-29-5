@@ -637,12 +637,13 @@ MonoBehaviour:
   blockSelfInput: 1
   blockTargetInput: 1
   zeroTargetVelocity: 1
-  lateralOffset: 2.5
-  heightOffset: 1.6
-  lookAtHeightOffset: 1.4
-  distanceBackoff: 0.4
+  lateralOffset: 1
+  heightOffset: 1.2
+  lookAtHeightOffset: 1.2
+  distanceBackoff: 0.1
   ultimateAnimTrigger: Ultimate
   ultimateWeaponPrefab: {fileID: 0}
+  characterData: {fileID: 11400000, guid: a45443c4c6c98334bad9571f98b02b13, type: 2}
   selfModel: {fileID: -8163085030667433099}
   selfAnimator: {fileID: 3873752212823095745}
 --- !u!114 &628616068803475744
