@@ -8,7 +8,6 @@ using UnityEngine;
 /// - 오프라인: SyncVar 값이 불안정하므로 <see cref="_localOwner"/>와 평범한 bool로 로컬 관리.
 ///
 /// 적중 시 효과:
-/// 1. 데미지는 <see cref="CharacterHitBox"/>가 자동 처리.
 /// 2. 피격 대상의 <see cref="ICharacterModel.RequestApplyStun"/>를 호출:
 ///    - 모델이 SyncVar로 스턴 상태 동기화
 ///    - <see cref="UnifiedCharacterView"/>가 이벤트를 받아 애니메이터 SS_Stun Bool 토글
@@ -16,17 +15,11 @@ using UnityEngine;
 ///    - 인스펙터의 전격 VFX 프리팹이 피격 대상에 자식으로 부착 (오프셋 적용)
 ///    - 이미 스턴 중이면 지속시간 갱신 + VFX 재스폰
 ///
-/// 소유자 필터링:
-/// <see cref="UnifiedWeaponArrow"/>와 동일하게 <see cref="WeaponOwnerRelay"/>를 자동 부착해
-/// 히트박스가 자식에 있어도 소유자 역추적이 가능하도록 한다.
 /// </summary>
 public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
 {
     [Header("아이템 정보")]
     [SerializeField] public ItemStatus itemStat;
-
-    [Header("히트박스")]
-    [SerializeField] private CharacterHitBox hitBox;
 
     [Header("스턴 설정")]
     [Tooltip("적중 시 부여할 스턴 지속시간(초).")]
@@ -64,14 +57,6 @@ public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
     // ------------------------------------------------------------
     private void Awake()
     {
-        if (hitBox == null)
-            hitBox = GetComponent<CharacterHitBox>();
-        if (hitBox == null)
-            hitBox = GetComponentInChildren<CharacterHitBox>();
-
-        if (hitBox != null && itemStat != null)
-            hitBox.damage = itemStat.damage;
-
         if (itemStat != null)
         {
             flySpeed = itemStat.speed;
@@ -88,12 +73,7 @@ public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
 
     private void EnsureOwnerRelay()
     {
-        if (hitBox == null) return;
-        if (hitBox.gameObject == gameObject) return;
 
-        var relay = hitBox.GetComponent<WeaponOwnerRelay>();
-        if (relay == null) relay = hitBox.gameObject.AddComponent<WeaponOwnerRelay>();
-        relay.SetSource(this);
     }
 
     private void Update()
@@ -149,6 +129,7 @@ public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
         if (targetModel == null) return;
 
         _hasHit = true;
+        Debug.Log("테이저건 적중!");
 
         targetModel.RequestApplyStun(
             stunDuration,
@@ -186,8 +167,6 @@ public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
             isNocked = nocked;
             isLaunched = false;
         }
-
-        if (hitBox != null) hitBox.DisableHitbox();
     }
 
     /// <summary>호환용: itemStat.speed로 발사.</summary>
@@ -218,17 +197,12 @@ public class UnifiedTazorBullet : NetworkBehaviour, IWeaponHitBox
 
         transform.rotation = Quaternion.LookRotation(dirN);
 
-        if (hitBox != null)
-        {
-            hitBox.EnableHitbox();
-            if (!AuthorityGuard.IsOffline && isServer) RpcEnableHitbox();
-        }
+        
     }
 
     [ClientRpc]
     private void RpcEnableHitbox()
     {
-        if (hitBox != null) hitBox.EnableHitbox();
     }
 
     // ------------------------------------------------------------

@@ -16385,9 +16385,7 @@ GameObject:
   - component: {fileID: 3581757717368248717}
   - component: {fileID: 8326523775914716780}
   - component: {fileID: 3725064876884886222}
-  - component: {fileID: 7897143710509356876}
   - component: {fileID: 448637156442605414}
-  - component: {fileID: 5271730820483119518}
   - component: {fileID: 6028000761950738788}
   - component: {fileID: 6334264412334019463}
   m_Layer: 0
@@ -16478,27 +16476,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 60, y: 60, z: 60}
   m_Center: {x: 0, y: 8.37, z: 0}
---- !u!114 &7897143710509356876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914586400693176280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 066a24dbb03a7f542a83b2d831bed8a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
-  hitboxCollider: {fileID: 3725064876884886222}
-  effectIndex: 0
-  hitEffectPrefab: {fileID: 0}
-  effectDuration: 2
-  audioSource: {fileID: 0}
-  attackHitSounds: []
-  attackHitVolume: 1
-  allowedStates: []
 --- !u!114 &448637156442605414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16516,23 +16493,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &5271730820483119518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914586400693176280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8df8a0a2ed585c44dbb8902bd1bbb3eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  itemStat: {fileID: 11400000, guid: 47cbb397a8bc1bd45a1bd1f015116bdd, type: 2}
-  hitBox: {fileID: 7897143710509356876}
 --- !u!114 &6028000761950738788
 MonoBehaviour:
   m_ObjectHideFlags: 0

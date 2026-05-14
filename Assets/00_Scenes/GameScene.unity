@@ -5537,11 +5537,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2975911e7efeb674f811af84a0c90eb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogColor: {r: 0.85, g: 0.85, b: 0.88, a: 1}
-  maxDensity: 0.85
+  fogColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  maxDensity: 0.494
   fadeSpeed: 3
   noiseScale: 3
-  noiseSpeed: 0.2
+  noiseSpeed: 1.5
 --- !u!114 &1222093607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5556,8 +5556,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mistColor: {r: 0, g: 0.5754717, b: 0.03579493, a: 0.5254902}
   maxDensity: 0.45
-  fadeInSpeed: 0.15
-  fadeOutSpeed: 0.25
+  fadeInSpeed: 3
+  fadeOutSpeed: 1.5
   noiseScale: 3
   noiseSpeed: 0.15
   layerScale2: 0.6
