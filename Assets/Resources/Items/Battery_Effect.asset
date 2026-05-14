@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Battery_Effect
   m_EditorClassIdentifier: 
   duration: 3000
-  uiSprite: {fileID: 21300000, guid: 02f049b8c8fedcb4c8e1dd692496da8b, type: 3}
+  uiSprite: {fileID: 21300000, guid: 237f4ae455e26f549aea57d8c806ea63, type: 3}
   uiType: 0
   damageMultiplier: 3
   hitCount: 1

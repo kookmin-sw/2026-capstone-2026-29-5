@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   availableTime: 1000
   useableTime: 3
-  damage: 30
+  damage: 50
   speed: 5
   range: 5
   rollSpeed: 0
   projectileDrop: 0
   startUpDelay: 0
   RecoveryDelay: 0
+  Stun: 0
+  knockBack: 0
+  stop: 0
