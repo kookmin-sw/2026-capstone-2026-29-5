@@ -115,8 +115,8 @@ MonoBehaviour:
   fixedArcHeight: 3
   throwDistance: 6
   fuseDuration: 1.5
-  explosionRadius: 4
-  explosionDamage: 50
+  explosionRadius: 4.5
+  explosionDamage: 30
   explosionEffectPrefab: {fileID: 84646716037477124, guid: baaea17ef5ba70b45b8b8d7c7132d24b, type: 3}
   explosionLifetime: 0.5
   attachSlot: 0

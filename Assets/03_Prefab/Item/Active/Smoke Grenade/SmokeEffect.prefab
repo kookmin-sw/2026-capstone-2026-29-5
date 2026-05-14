@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5582177994228814698}
   - component: {fileID: 7508383002553424878}
   - component: {fileID: 4235906068169157520}
+  - component: {fileID: 7184345742697594915}
   m_Layer: 3
   m_Name: SmokeEffect
   m_TagString: Untagged
@@ -80,3 +81,24 @@ MonoBehaviour:
   deploySounds:
   - {fileID: 8300000, guid: 86dd993b55279c44c962e731a8bad240, type: 3}
   deployVolume: 1
+--- !u!135 &7184345742697594915
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2955583746299185175}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}
