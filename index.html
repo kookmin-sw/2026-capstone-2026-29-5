@@ -11,34 +11,35 @@
 
   <!-- ============ 배경 이미지 영역 ============ -->
   <div class="hero-bg">
-    <!-- 배경 이미지는 CSS에서 --hero-bg-image 변수로 지정 -->
-
     <div class="hero-content">
-      <h1 class="hero-title">HEROINES OF STORM</h1>
+      <div class="hero-badge">TEAM LTS PRESENTS</div>
+      <h1 class="hero-title">HEROINES<br>OF STORM</h1>
       <p class="hero-subtitle">3D 캐주얼 1 vs 1 격투게임</p>
 
       <!-- 데모 영상 -->
       <div class="demo-video-section">
-        <h2 class="section-label">DEMO</h2>
+        <h2 class="section-label"><span class="label-accent">01</span> DEMO</h2>
         <div class="video-wrapper">
-          <div class="video-placeholder">            
-<iframe width="100%" height="100%" src="https://www.youtube.com/embed/S0okkCAmI4M" frameborder="0" allowfullscreen></iframe>
+          <div class="video-container">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/S0okkCAmI4M" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
       </div>
 
       <!-- 스토리 -->
       <div class="story-section">
-        <h2 class="section-label">STORY</h2>
-        <p class="story-text">
-          히로인들은 비록 은 나쁘게 자신의 차원에서 떨어졌지만, 다시 원래 세계에 돌아가기 위해 콜로세움에서 자신의 위용을 뽐내며 1등을 해서 메테오 결정을 만들어 만다. 콜로세움에 상기하자마자 시작된 것은 무제한 격투. 우선 이기고 보자.
-        </p>
+        <h2 class="section-label"><span class="label-accent">02</span> STORY</h2>
+        <div class="story-card">
+          <p class="story-text">
+            히로인들은 비록 은 나쁘게 자신의 차원에서 떨어졌지만, 다시 원래 세계에 돌아가기 위해 콜로세움에서 자신의 위용을 뽐내며 1등을 해서 메테오 결정을 만들어 만다. 콜로세움에 상기하자마자 시작된 것은 무제한 격투. 우선 이기고 보자.
+          </p>
+        </div>
       </div>
 
       <!-- 스크롤 유도 -->
       <div class="scroll-indicator">
-        <span>아래로 스크롤</span>
-        <div class="scroll-arrow"></div>
+        <div class="scroll-line"></div>
+        <span>SCROLL</span>
       </div>
     </div>
   </div>
@@ -46,19 +47,21 @@
   <!-- ============ 메인 콘텐츠 ============ -->
   <div class="main-layer">
 
-    <!-- 챕터 네비게이션 -->
     <nav class="chapter-nav">
-      <a href="#multiplayer" class="chapter-btn">멀티플레이</a>
-      <a href="#map" class="chapter-btn">맵 소개</a>
-      <a href="#player" class="chapter-btn">플레이어</a>
-      <a href="#items" class="chapter-btn">아이템</a>
-      <a href="#architecture" class="chapter-btn">아키텍처</a>
-      <a href="#team" class="chapter-btn">Made By</a>
+      <a href="#multiplayer" class="chapter-btn"><span class="btn-num">01</span>멀티플레이</a>
+      <a href="#map" class="chapter-btn"><span class="btn-num">02</span>맵 소개</a>
+      <a href="#player" class="chapter-btn"><span class="btn-num">03</span>플레이어</a>
+      <a href="#items" class="chapter-btn"><span class="btn-num">04</span>아이템</a>
+      <a href="#architecture" class="chapter-btn"><span class="btn-num">05</span>아키텍처</a>
+      <a href="#team" class="chapter-btn"><span class="btn-num">06</span>Made By</a>
     </nav>
 
-    <!-- 멀티플레이 소개 -->
+    <!-- 멀티플레이 -->
     <section id="multiplayer" class="chapter">
-      <h2 class="chapter-title">멀티플레이</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">01</span>
+        <h2 class="chapter-title">멀티플레이</h2>
+      </div>
       <div class="chapter-body">
         <div class="chapter-card">
           <div class="image-placeholder">멀티플레이 스크린샷 추가 예정</div>
@@ -69,9 +72,9 @@
         <div class="chapter-card">
           <h3>핵심 특징</h3>
           <ul class="feature-list">
-            <li><strong>Easy to Play</strong> — 복잡한 커맨드 없이 키 하나로 매핑된 직관적인 전투</li>
-            <li><strong>빠른 템포</strong> — 5분 내외의 짧은 매치로 자투리 시간에 즐길 수 있는 게임</li>
-            <li><strong>전략적 깊이</strong> — 아이템과 지형지물을 활용한 다채로운 전략 구사</li>
+            <li><strong>Easy to Play</strong> <span class="divider">—</span> 복잡한 커맨드 없이 키 하나로 매핑된 직관적인 전투</li>
+            <li><strong>빠른 템포</strong> <span class="divider">—</span> 5분 내외의 짧은 매치로 자투리 시간에 즐길 수 있는 게임</li>
+            <li><strong>전략적 깊이</strong> <span class="divider">—</span> 아이템과 지형지물을 활용한 다채로운 전략 구사</li>
           </ul>
         </div>
       </div>
@@ -79,7 +82,10 @@
 
     <!-- 맵 소개 -->
     <section id="map" class="chapter">
-      <h2 class="chapter-title">맵 소개</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">02</span>
+        <h2 class="chapter-title">맵 소개</h2>
+      </div>
       <div class="chapter-body">
         <div class="chapter-card wide">
           <div class="image-placeholder">맵 전경 이미지 추가 예정</div>
@@ -102,9 +108,12 @@
       </div>
     </section>
 
-    <!-- 플레이어 소개 -->
+    <!-- 플레이어 -->
     <section id="player" class="chapter">
-      <h2 class="chapter-title">플레이어</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">03</span>
+        <h2 class="chapter-title">플레이어</h2>
+      </div>
       <div class="chapter-body">
         <div class="chapter-card">
           <div class="image-placeholder">플레이어 스크린샷 추가 예정</div>
@@ -134,25 +143,32 @@
       </div>
     </section>
 
-    <!-- 아이템 소개 -->
+    <!-- 아이템 -->
     <section id="items" class="chapter">
-      <h2 class="chapter-title">아이템 소개</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">04</span>
+        <h2 class="chapter-title">아이템 소개</h2>
+      </div>
       <div class="chapter-body">
         <p class="chapter-intro">맵 곳곳에 배치된 다양한 아이템을 활용한 짜릿한 역전을 노려보자.</p>
         <div class="item-grid">
           <div class="item-card">
+            <div class="item-icon">⚔</div>
             <h4>무기 아이템</h4>
             <p>다양한 무기와 아이템을 활용할 수 있다.</p>
           </div>
           <div class="item-card">
+            <div class="item-icon">⚡</div>
             <h4>액티브 아이템</h4>
             <p>액티브 아이템을 활용해 상대방을 방해하거나 추가 효과를 얻을 수 있다.</p>
           </div>
           <div class="item-card">
+            <div class="item-icon">🌀</div>
             <h4>필드 아이템</h4>
             <p>필드에 배치된 오브젝트를 통해 불가능한 변수를 만들자.</p>
           </div>
           <div class="item-card">
+            <div class="item-icon">🛡</div>
             <h4>패시브 아이템</h4>
             <p>패시브 효과로 전투를 유리하게 이끌자.</p>
           </div>
@@ -160,9 +176,9 @@
         <div class="chapter-card wide">
           <h3>아이템 플레이의 장점</h3>
           <ul class="feature-list">
-            <li><strong>실력 격차 완화</strong> — 강력한 아이템으로 역전의 기회를 제공</li>
-            <li><strong>변수 창출</strong> — 매 경기마다 다른 양상의 전투</li>
-            <li><strong>시너지의 즐거움</strong> — 아이템 조합으로 전략적 승리</li>
+            <li><strong>실력 격차 완화</strong> <span class="divider">—</span> 강력한 아이템으로 역전의 기회를 제공</li>
+            <li><strong>변수 창출</strong> <span class="divider">—</span> 매 경기마다 다른 양상의 전투</li>
+            <li><strong>시너지의 즐거움</strong> <span class="divider">—</span> 아이템 조합으로 전략적 승리</li>
           </ul>
         </div>
       </div>
@@ -170,7 +186,10 @@
 
     <!-- 아키텍처 -->
     <section id="architecture" class="chapter">
-      <h2 class="chapter-title">ARCHITECTURE</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">05</span>
+        <h2 class="chapter-title">ARCHITECTURE</h2>
+      </div>
       <div class="chapter-body">
         <div class="chapter-card wide">
           <div class="image-placeholder tall">시스템 아키텍처 다이어그램 추가 예정</div>
@@ -201,30 +220,33 @@
 
     <!-- Made By -->
     <section id="team" class="chapter">
-      <h2 class="chapter-title">Made By</h2>
+      <div class="chapter-header">
+        <span class="chapter-num">06</span>
+        <h2 class="chapter-title">Made By</h2>
+      </div>
       <div class="chapter-body">
         <p class="chapter-intro">2026 캡스톤 디자인 29조 / TEAM LTS</p>
         <div class="team-grid">
           <div class="team-card">
-            <div class="team-role">팀장 · 클라이언트 · 기획</div>
+            <div class="team-badge">LEAD</div>
             <div class="team-name">이성재</div>
+            <div class="team-role">클라이언트 · 기획</div>
             <div class="team-id">20213041</div>
           </div>
           <div class="team-card">
-            <div class="team-role">클라이언트 · 서버 · UI</div>
             <div class="team-name">백승현</div>
+            <div class="team-role">클라이언트 · 서버 · UI</div>
             <div class="team-id">20213007</div>
           </div>
           <div class="team-card">
-            <div class="team-role">클라이언트 · 백엔드</div>
             <div class="team-name">전영환</div>
+            <div class="team-role">클라이언트 · 백엔드</div>
             <div class="team-id">20213077</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 푸터 -->
     <footer>
       <p>&copy; 2026 Team LTS. All rights reserved.</p>
     </footer>
@@ -232,29 +254,54 @@
   </div>
 
   <script>
-    // 스크롤 시 챕터 등장 애니메이션
+    // 등장 애니메이션 (순차 딜레이)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-    document.querySelectorAll('.chapter, .chapter-card, .item-card, .team-card').forEach(el => {
+    document.querySelectorAll('.chapter, .chapter-card, .item-card, .team-card').forEach((el, i) => {
+      el.style.transitionDelay = `${(i % 4) * 0.08}s`;
       observer.observe(el);
     });
 
     // 네비게이션 스무스 스크롤
-    document.querySelectorAll('.chapter-btn').forEach(btn => {
+    const navBtns = document.querySelectorAll('.chapter-btn');
+    const chapters = document.querySelectorAll('.chapter');
+
+    navBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const target = document.querySelector(btn.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    // 스크롤 시 active 네비게이션
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navBtns.forEach(btn => btn.classList.remove('active'));
+          const activeBtn = document.querySelector(`.chapter-btn[href="#${entry.target.id}"]`);
+          if (activeBtn) activeBtn.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3, rootMargin: '-80px 0px -50% 0px' });
+
+    chapters.forEach(ch => navObserver.observe(ch));
+
+    // 히어로 패럴랙스
+    const heroContent = document.querySelector('.hero-content');
+    const heroBg = document.querySelector('.hero-bg');
+    window.addEventListener('scroll', () => {
+      const s = window.scrollY;
+      const h = heroBg.offsetHeight;
+      if (s < h) {
+        heroContent.style.transform = `translateY(${s * 0.15}px)`;
+        heroContent.style.opacity = 1 - (s / h) * 0.6;
+      }
+    }, { passive: true });
   </script>
 
 </body>
