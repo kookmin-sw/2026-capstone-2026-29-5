@@ -162,6 +162,19 @@ namespace StarterAssets
         public bool IsDashing => _isDashing;
         private Vector3 _dashDirection;
 
+        [Header("Knockback / External Impulse")]
+        [Tooltip("외부 임펄스(넉백)가 감쇠되는 속도. 클수록 빠르게 멈춤.")]
+        [SerializeField] private float externalImpulseDamping = 5f;
+
+        [Tooltip("넉백 적용 시 캐릭터가 잠시 이동 입력을 무시할 기본 시간(초).")]
+        [SerializeField] private float defaultKnockbackStunDuration = 0.25f;
+
+        private Vector3 _externalHorizontalVelocity;
+        private float _knockbackLockTimer = 0f;
+
+        //넉백 시 이동 잠금 여부를 확인.
+        public bool IsKnockbackLocked => _knockbackLockTimer > 0f;
+
         // 에임 모드: 활 등 원거리 무기 장착 시 UnifiedWeaponBow가 켬/끔.
         // 이동 입력이 없어도 캐릭터 yaw를 카메라 yaw로 정렬.
         private bool _isAiming = false;
@@ -373,6 +386,13 @@ namespace StarterAssets
             if (_shiftCooldownDelta > 0.0f) _shiftCooldownDelta -= Time.deltaTime;
             if (_shiftCooldownDelta > 0.0f) _input.shift = false;
 
+            //넉백시 이동 정지가 포함된다면 Timer에 값을 넣으면 됨
+            if (_knockbackLockTimer > 0f)
+            {
+                _knockbackLockTimer -= Time.deltaTime;
+                _input.move = Vector2.zero;
+            }
+
             float targetSpeed = !Grounded ? JumpMoveSpeed :
                                 _animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack") ? AttackMoveSpeed :
                                 _animator.GetCurrentAnimatorStateInfo(0).IsTag("Strong Attack") ? AttackMoveSpeed :
@@ -460,9 +480,38 @@ namespace StarterAssets
             }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            Vector3 externalMotion = _externalHorizontalVelocity * Time.deltaTime;
 
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+            //디버그
+            if (_externalHorizontalVelocity.sqrMagnitude > 0.01f)
+            {
+                Debug.Log($"[KB] {Time.time:F3} - Move() 적용: externalVel={_externalHorizontalVelocity.magnitude:F2}, " +
+                          $"animState={_animator.GetCurrentAnimatorStateInfo(0).fullPathHash}, " +
+                          $"transformPos={transform.position}");
+            }
+            Vector3 posBefore = transform.position;
+            //
+
+            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) + externalMotion +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+
+
+            //디버그
+            Vector3 posAfter = transform.position;
+            if (externalMotion.sqrMagnitude > 0.0001f)
+            {
+                Debug.Log($"[KB] {Time.time:F3} - 적용 후 위치 델타: {(posAfter - posBefore).magnitude:F4}, 예상: {externalMotion.magnitude:F4}");
+            }
+            //
+
+            // 밀치기 - 외부 임펄스 감쇠
+            _externalHorizontalVelocity = Vector3.Lerp(
+                _externalHorizontalVelocity,
+                Vector3.zero,
+                externalImpulseDamping * Time.deltaTime);
+
+            if (_externalHorizontalVelocity.sqrMagnitude < 0.01f)
+                _externalHorizontalVelocity = Vector3.zero;
 
             if (_hasAnimator)
             {
@@ -824,6 +873,28 @@ namespace StarterAssets
             // _animator 가 null 일 수 있으므로 안전하게 fetch.
             if (_animator == null) TryGetComponent(out _animator);
             if (_animator != null) _animator.SetTrigger("Shift");
+        }
+
+        //넉백 처리. 각 클라이언트 혹은 로컬 환경에서 적용.
+        public void ApplyKnockback(Vector3 horizontalImpulse, float verticalImpulse = 0f, float inputLockDuration = -1f)
+        {
+            //디버그
+            Debug.Log($"[KB] {Time.time:F3} - 컨트롤러에 임펄스 가함, before _externalVel={_externalHorizontalVelocity.magnitude:F2}, impulse={horizontalImpulse.magnitude:F2}");
+
+            horizontalImpulse.y = 0f;
+            _externalHorizontalVelocity += horizontalImpulse;
+
+            if (verticalImpulse > 0.001f)
+            {
+                _verticalVelocity = Mathf.Max(_verticalVelocity, verticalImpulse);
+                if (_hasAnimator) _animator.SetBool(_animIDGrounded, false);
+            }
+
+            float lockDuration = inputLockDuration < 0f ? defaultKnockbackStunDuration : inputLockDuration;
+            if (lockDuration > _knockbackLockTimer) _knockbackLockTimer = lockDuration;
+
+            //디버그
+            Debug.Log($"[KB] {Time.time:F3} - 임펄스 가한 직후, after _externalVel={_externalHorizontalVelocity.magnitude:F2}");
         }
 
     }

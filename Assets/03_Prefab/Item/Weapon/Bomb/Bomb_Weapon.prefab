@@ -116,7 +116,10 @@ MonoBehaviour:
   throwDistance: 9
   fuseDuration: 1.5
   explosionRadius: 4.5
-  explosionDamage: 30
+  explosionDamage: 50
+  explosionKnockbackPower: 50
+  explosionKnockbackVertical: 20
+  explosionKnockbackLockDuration: 0.4
   explosionEffectPrefab: {fileID: 84646716037477124, guid: baaea17ef5ba70b45b8b8d7c7132d24b, type: 3}
   explosionLifetime: 0.5
   attachSlot: 0

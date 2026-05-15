@@ -398,6 +398,64 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     }
 
     // ============================================================
+    // 넉백 — RequestApplyStun와 동일한 방식
+    // ============================================================
+    public void RequestApplyKnockback(Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration)
+    {
+        //디버그
+        Debug.Log($"[KB] {Time.time:F3} - RequestApplyKnockback 호출됨 on {name}");
+
+        // 의미 없는 호출 차단
+        if (horizontalImpulse.sqrMagnitude < 0.0001f && verticalImpulse <= 0f) return;
+
+        if (AuthorityGuard.IsOffline)
+        {
+            ApplyKnockbackLocal(horizontalImpulse, verticalImpulse, inputLockDuration);
+        }
+        else
+        {
+            // 네트워크: 서버에서 호출되면 바로 TargetRpc, 클라에서 호출되면 Cmd 경유.
+            if (isServer)
+            {
+                ApplyKnockbackServer(horizontalImpulse, verticalImpulse, inputLockDuration);
+            }
+            else
+            {
+                CmdRequestKnockback(horizontalImpulse, verticalImpulse, inputLockDuration);
+            }
+        }
+    }
+
+    [Server]
+    private void ApplyKnockbackServer(Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration)
+    {
+
+        // 피격자 본인 클라이언트에게만 임펄스를 보낸다.
+        // → 본인 CharacterController가 움직이고, NetworkTransform이 동기화.
+        TargetApplyKnockback(connectionToClient, horizontalImpulse, verticalImpulse, inputLockDuration);
+    }
+
+    [TargetRpc]
+    private void TargetApplyKnockback(NetworkConnection target, Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration)
+    {
+        //디버그
+        Debug.Log($"[KB] {Time.time:F3} - TargetRpc 수신 on {name}");
+
+        ApplyKnockbackLocal(horizontalImpulse, verticalImpulse, inputLockDuration);
+    }
+
+    private void ApplyKnockbackLocal(Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration)
+    {
+        var controller = GetComponent<StarterAssets.UnifiedThirdPersonController>();
+        if (controller == null)
+        {
+            Debug.LogWarning($"[{nameof(UnifiedCharacterModel)}] UnifiedThirdPersonController 없음 — 넉백 적용 불가.");
+            return;
+        }
+        controller.ApplyKnockback(horizontalImpulse, verticalImpulse, inputLockDuration);
+    }
+
+    // ============================================================
     // 오프라인 데미지 로직
     // ============================================================
     private void ApplyDamageLocal(float damage)
@@ -529,6 +587,14 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     [Command] private void CmdGunShoot() { gunShootCount++; }
     [Command] private void CmdMeleeThrow() { meleeThrowCount++; }
     [Command] private void CmdUseActive() { useActiveCount++; }
+
+    [Command(requiresAuthority = false)]
+    private void CmdRequestKnockback(Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration)
+    {
+        if (IsDead) return;
+        // (선택) 서버 검증: sender 거리/쿨다운/무적 등을 여기서 체크
+        ApplyKnockbackServer(horizontalImpulse, verticalImpulse, inputLockDuration);
+    }
 
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(float amount)

@@ -53,6 +53,16 @@ public class UnifiedWeaponBomb : NetworkBehaviour, IPlayerWeapon
     [Tooltip("폭발 데미지.")]
     [SerializeField] private float explosionDamage = 50f;
 
+    [Header("폭발 넉백 설정")]
+    [Tooltip("폭발 중심에서의 수평 넉백 세기 (거리 감쇠 적용).")]
+    [SerializeField] private float explosionKnockbackPower = 15f;
+
+    [Tooltip("폭발이 피해자를 위로 띄우는 속도.")]
+    [SerializeField] private float explosionKnockbackVertical = 5f;
+
+    [Tooltip("피해자 이동 입력 잠금 시간(초). 음수면 컨트롤러 기본값.")]
+    [SerializeField] private float explosionKnockbackLockDuration = 0.4f;
+
     [Tooltip("폭발 이펙트 프리팹 (NetworkIdentity 권장).")]
     [SerializeField] private GameObject explosionEffectPrefab;
 
