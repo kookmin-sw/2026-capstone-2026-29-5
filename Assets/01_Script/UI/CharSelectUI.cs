@@ -43,16 +43,16 @@ public class CharSelectUI : MonoBehaviour
     public GameObject vsPanel;
     [Tooltip("캐릭터 이름 표시 패널 등 선택 UI 루트 — 연출 시 숨길 오브젝트들")]
     public GameObject[] selectionOnlyObjects;   // 썸네일 컨테이너, 캐릭터 설명 등
-    [Tooltip("슬라이드 이동 거리 (픽셀). 화면 해상도에 맞게 조정)")]
-    public float slideOffscreenX = 900f;
-    [Tooltip("슬라이드 후 P1 초상화의 최종 X 위치 (anchoredPosition). 중앙 기준 음수 = 왼쪽)")]
-    public float p1SlideTargetX = -300f;
-    [Tooltip("슬라이드 후 P2 초상화의 최종 X 위치 (anchoredPosition). 중앙 기준 양수 = 오른쪽)")]
-    public float p2SlideTargetX = 300f;
-    [Tooltip("초상화 슬라이드 소요 시간 (초)")]
-    public float slideDuration = 0.45f;
-    [Tooltip("VS 팝업 연출 소요 시간 (초)")]
-    public float vsPopDuration = 0.3f;
+    // [Tooltip("슬라이드 이동 거리 (픽셀). 화면 해상도에 맞게 조정)")]
+    // public float slideOffscreenX = 900f;
+    // [Tooltip("슬라이드 후 P1 초상화의 최종 X 위치 (anchoredPosition). 중앙 기준 음수 = 왼쪽)")]
+    // public float p1SlideTargetX = -300f;
+    // [Tooltip("슬라이드 후 P2 초상화의 최종 X 위치 (anchoredPosition). 중앙 기준 양수 = 오른쪽)")]
+    // public float p2SlideTargetX = 300f;
+    // [Tooltip("초상화 슬라이드 소요 시간 (초)")]
+    // public float slideDuration = 0.45f;
+    // [Tooltip("VS 팝업 연출 소요 시간 (초)")]
+    // public float vsPopDuration = 0.3f;
 
     [Header("로딩 패널")]
     public GameObject loadingPanel;
@@ -392,77 +392,77 @@ public class CharSelectUI : MonoBehaviour
         // 살짝 텀을 두어 숨김이 자연스럽게 느껴지도록
         yield return new WaitForSeconds(0.1f);
 
-        // ── Step 2. 초상화를 화면 양쪽 바깥으로 초기 배치 ─────────
-        // P1은 왼쪽 바깥, P2는 오른쪽 바깥에서 시작
-        float p1OrigY = p1PortraitRect != null ? p1PortraitRect.anchoredPosition.y : 0f;
-        float p2OrigY = p2PortraitRect != null ? p2PortraitRect.anchoredPosition.y : 0f;
+        // // ── Step 2. 초상화를 화면 양쪽 바깥으로 초기 배치 ─────────
+        // // P1은 왼쪽 바깥, P2는 오른쪽 바깥에서 시작
+        // float p1OrigY = p1PortraitRect != null ? p1PortraitRect.anchoredPosition.y : 0f;
+        // float p2OrigY = p2PortraitRect != null ? p2PortraitRect.anchoredPosition.y : 0f;
 
-        Vector2 p1From = new Vector2(-slideOffscreenX, p1OrigY);
-        Vector2 p2From = new Vector2( slideOffscreenX, p2OrigY);
-        Vector2 p1To   = new Vector2(p1SlideTargetX,  p1OrigY);
-        Vector2 p2To   = new Vector2(p2SlideTargetX,  p2OrigY);
+        // Vector2 p1From = new Vector2(-slideOffscreenX, p1OrigY);
+        // Vector2 p2From = new Vector2( slideOffscreenX, p2OrigY);
+        // Vector2 p1To   = new Vector2(p1SlideTargetX,  p1OrigY);
+        // Vector2 p2To   = new Vector2(p2SlideTargetX,  p2OrigY);
 
-        if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = p1From;
-        if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = p2From;
+        // if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = p1From;
+        // if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = p2From;
 
-        // ── Step 3. 초상화 슬라이드인 ─────────────────────────────
-        float elapsed = 0f;
-        while (elapsed < slideDuration)
-        {
-            elapsed += Time.deltaTime;
-            // EaseOutCubic
-            float t = 1f - Mathf.Pow(1f - Mathf.Clamp01(elapsed / slideDuration), 3f);
+        // // ── Step 3. 초상화 슬라이드인 ─────────────────────────────
+        // float elapsed = 0f;
+        // while (elapsed < slideDuration)
+        // {
+        //     elapsed += Time.deltaTime;
+        //     // EaseOutCubic
+        //     float t = 1f - Mathf.Pow(1f - Mathf.Clamp01(elapsed / slideDuration), 3f);
 
-            if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = Vector2.Lerp(p1From, p1To, t);
-            if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = Vector2.Lerp(p2From, p2To, t);
+        //     if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = Vector2.Lerp(p1From, p1To, t);
+        //     if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = Vector2.Lerp(p2From, p2To, t);
 
-            yield return null;
-        }
+        //     yield return null;
+        // }
 
-        // 최종 위치 확정
-        if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = p1To;
-        if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = p2To;
+        // // 최종 위치 확정
+        // if (p1PortraitRect != null) p1PortraitRect.anchoredPosition = p1To;
+        // if (p2PortraitRect != null) p2PortraitRect.anchoredPosition = p2To;
 
-        // ── Step 4. VS 팝업 ────────────────────────────────────────
-        if (vsPanel != null)
-        {
-            vsPanel.SetActive(true);
+        // // ── Step 4. VS 팝업 ────────────────────────────────────────
+        // if (vsPanel != null)
+        // {
+        //     vsPanel.SetActive(true);
 
-            // 스케일 0 → 1 팝업 효과
-            var vsRect = vsPanel.GetComponent<RectTransform>();
-            if (vsRect != null)
-            {
-                elapsed = 0f;
-                while (elapsed < vsPopDuration)
-                {
-                    elapsed += Time.deltaTime;
-                    // EaseOutBack
-                    float t  = Mathf.Clamp01(elapsed / vsPopDuration);
-                    float s  = EaseOutBack(t);
-                    vsRect.localScale = new Vector3(s, s, 1f);
-                    yield return null;
-                }
-                vsRect.localScale = Vector3.one;
-            }
-        }
+        //     // 스케일 0 → 1 팝업 효과
+        //     var vsRect = vsPanel.GetComponent<RectTransform>();
+        //     if (vsRect != null)
+        //     {
+        //         elapsed = 0f;
+        //         while (elapsed < vsPopDuration)
+        //         {
+        //             elapsed += Time.deltaTime;
+        //             // EaseOutBack
+        //             float t  = Mathf.Clamp01(elapsed / vsPopDuration);
+        //             float s  = EaseOutBack(t);
+        //             vsRect.localScale = new Vector3(s, s, 1f);
+        //             yield return null;
+        //         }
+        //         vsRect.localScale = Vector3.one;
+        //     }
+        // }
 
-        yield return new WaitForSeconds(0.4f);
+        // yield return new WaitForSeconds(0.4f);
 
         // ── Step 5. 로딩 패널 등장
-        yield return new WaitForSeconds(1.5f); // 잠시 대기
+        yield return new WaitForSeconds(1.0f); // 잠시 대기
 
         // countdownPanel 대신 loadingPanel 활성화
         if (loadingPanel != null) loadingPanel.SetActive(true);
 
     }
 
-    // EaseOutBack 수식 (overshooting 팝업 느낌)
-    private static float EaseOutBack(float t)
-    {
-        const float c1 = 1.70158f;
-        const float c3 = c1 + 1f;
-        return 1f + c3 * Mathf.Pow(t - 1f, 3f) + c1 * Mathf.Pow(t - 1f, 2f);
-    }
+    // // EaseOutBack 수식 (overshooting 팝업 느낌)
+    // private static float EaseOutBack(float t)
+    // {
+    //     const float c1 = 1.70158f;
+    //     const float c3 = c1 + 1f;
+    //     return 1f + c3 * Mathf.Pow(t - 1f, 3f) + c1 * Mathf.Pow(t - 1f, 2f);
+    // }
 
     /// <summary>
     /// 썸네일 컨테이너, 커서 인디케이터, 캐릭터 설명 등 선택 단계 전용 UI를 숨깁니다.
