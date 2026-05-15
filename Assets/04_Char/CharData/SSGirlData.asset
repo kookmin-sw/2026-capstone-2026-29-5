@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5076a18b5bcf2384c867f5c2f6aaf95e, type: 3}
   m_Name: SSGirlData
   m_EditorClassIdentifier: 
-  characterName: SSGirl
+  characterName: "\uC560\uC26C\uD3EC\uB4DC"
   description: "\uAC80\uACFC \uBC29\uD328\uB85C \uC2F8\uC6B0\uB294 \uC5EC\uC804\uC0AC"
-  portrait: {fileID: 21300000, guid: 9f4a9b853cdcf874694df5c21ad74701, type: 3}
-  thumbnail: {fileID: 21300000, guid: 2eee8244dc6c8c443a28a56199b14f9f, type: 3}
+  portrait: {fileID: 21300000, guid: 56f4cf7697c37b548a77aa4b24c85414, type: 3}
+  thumbnail: {fileID: 21300000, guid: 0543a2ec5905f4842b96015b1ce03a28, type: 3}
   nameImage: {fileID: 21300000, guid: c95b13df380d0f541a1f822c1cbeab33, type: 3}
+  inGameThumbnail: {fileID: 21300000, guid: b980252cff1b80d42b77a48c73264bac, type: 3}
   accentColor: {r: 1, g: 0.84933496, b: 0.495283, a: 1}
