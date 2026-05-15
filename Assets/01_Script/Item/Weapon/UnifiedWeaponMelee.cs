@@ -27,8 +27,7 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
     [SerializeField] private string boneFallbackPath = "";
 
     [Header("던지기 입력")]
-    [Tooltip("던지기 키 (오프라인 단일 플레이어 입력)")]
-    [SerializeField] private KeyCode throwKey = KeyCode.F;
+    private StarterAssets.StarterAssetsInputs _ownerInputs; // StarterAssetsInput에 반영함.
 
     [Header("Sound Settings")]
     [Tooltip("이 무기를 휘두를 때 재생되는 사운드. 비어있으면 캐릭터 기본 펀치 사운드가 그대로 재생됨.")]
@@ -85,6 +84,7 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
             EquipHandler(user);
             RegisterSwingSoundOverride(user);
             NotifyWeaponUI(user); // 아이템 UI 표시 추가
+            CacheOwnerInputs(user);
             return;
         }
 
@@ -93,6 +93,13 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
         if (atkSpeed != null) atkSpeed.ApplyTo(user);
 
         RpcSetUser(user);
+        CacheOwnerInputs(user);
+    }
+
+    private void CacheOwnerInputs(GameObject user)
+    {
+        if (user == null) { _ownerInputs = null; return; }
+        _ownerInputs = user.GetComponent<StarterAssets.StarterAssetsInputs>();
     }
 
     [ClientRpc]
@@ -106,6 +113,7 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
         EquipHandler(user);
         RegisterSwingSoundOverride(user);
         NotifyWeaponUI(user);
+        CacheOwnerInputs(user);
     }
 
     /// <summary>
@@ -242,10 +250,23 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
 
         // 던지기 입력: 온라인은 소유 클라이언트만, 오프라인은 본인
         bool canInput = AuthorityGuard.IsOffline || isOwned;
-        if (canInput && !isThrown && Input.GetKeyDown(throwKey))
+        if (canInput && !isThrown)
         {
-            Vector3 direction = owner != null ? owner.transform.forward : transform.forward;
-            RequestThrow(direction);
+            bool throwPressed = false;
+
+            // 우선: StarterAssetsInputs.throwAction (마우스 우클릭, New Input System)
+            if (_ownerInputs != null && _ownerInputs.throwAction)
+            {
+                Debug.Log("입력 읽힘");
+                throwPressed = true;
+                _ownerInputs.throwAction = false;   // 입력 소비 — 다음 프레임 연속 발화 방지
+            }
+
+            if (throwPressed)
+            {
+                Vector3 direction = owner != null ? owner.transform.forward : transform.forward;
+                RequestThrow(direction);
+            }
         }
     }
 
@@ -288,8 +309,15 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
 
         transform.rotation = Quaternion.LookRotation(flyDirection);
 
+        if (owner != null)
+        {
+            var model = owner.GetComponent<UnifiedCharacterModel>();
+            if (model != null) model.RequestMeleeThrow();
+        }
+
         // 오프라인은 RPC 대신 로컬에서 onThrown 효과 직접 적용
         OnThrownLocal(flyDirection);
+
     }
 
     [Command(requiresAuthority = true)]
@@ -309,6 +337,11 @@ public class UnifiedWeaponMelee : NetworkBehaviour, IPlayerWeapon, IWeaponHitBox
 
         transform.rotation = Quaternion.LookRotation(flyDirection);
 
+        if (owner != null)
+        {
+            var model = owner.GetComponent<UnifiedCharacterModel>();
+            if (model != null) model.RequestMeleeThrow();  // 서버에서 호출 → SyncVar로 모든 클라 전파
+        }
         RpcOnThrown(flyDirection);
     }
 
