@@ -27,7 +27,7 @@ public class trailController : MonoBehaviour
     {
         if (trail == null) return;
         if (!trail.enabled) return; // 이미 꺼져 있으면 무시
-        trail.Clear();
+        if (trail != null)trail.Clear();
         trail.enabled = false;
     }
 }

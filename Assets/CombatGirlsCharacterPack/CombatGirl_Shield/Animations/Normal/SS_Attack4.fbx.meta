@@ -88,6 +88,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.3363474
+        functionName: TrailOff
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.4004612
         functionName: EnableLeftFootHitbox
         data: 
@@ -97,13 +104,6 @@ ModelImporter:
         messageOptions: 0
       - time: 0.49967447
         functionName: DisableLeftFootHitbox
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.8230394
-        functionName: TrailOff
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

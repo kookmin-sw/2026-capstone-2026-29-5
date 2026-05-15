@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comboResetTime: 1
-  strongAttackHoldTime: 1.5
+  strongAttackHoldTime: 1
   selfHarmDamage: 20
 --- !u!114 &3556301501662293330
 MonoBehaviour:
@@ -707,6 +707,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[0]
+      value: Strong Attackr
+      objectReference: {fileID: 0}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[1]
       value: Ultimate
       objectReference: {fileID: 0}
@@ -725,6 +729,14 @@ PrefabInstance:
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: attackHitSounds.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[3]
+      value: Combo Attack 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[4]
+      value: Strong Attackr
       objectReference: {fileID: 0}
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[5]
@@ -848,7 +860,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8452091367517958602, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 505284165118010055, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
@@ -914,12 +927,11 @@ MonoBehaviour:
   corner: 1
   loop: 1
   points:
-  - {x: 0, y: 1.3, z: 0}
-  - {x: 0.1, y: 0.7, z: 0}
-  - {x: 0.1, y: 0.1, z: 0}
-  - {x: 0, y: -0.2, z: 0}
-  - {x: -0.1, y: 0.1, z: 0}
-  - {x: -0.1, y: 0.7, z: 0}
+  - {x: 0, y: 1.1, z: 0}
+  - {x: 0.03, y: 0.7, z: 0}
+  - {x: 0.03, y: 0.1, z: 0}
+  - {x: -0.03, y: 0.1, z: 0}
+  - {x: -0.03, y: 0.7, z: 0}
 --- !u!1 &3466501473924560290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 505284165118010055, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
@@ -942,12 +954,11 @@ MonoBehaviour:
   corner: 1
   loop: 1
   points:
-  - {x: 0, y: 1.3, z: 0}
-  - {x: 0.05, y: 0.7, z: 0}
-  - {x: 0.05, y: 0.1, z: 0}
-  - {x: 0, y: -0.2, z: 0}
-  - {x: -0.05, y: 0.1, z: 0}
-  - {x: -0.05, y: 0.7, z: 0}
+  - {x: 0, y: 1.1, z: 0}
+  - {x: 0.02, y: 0.7, z: 0}
+  - {x: 0.02, y: 0.1, z: 0}
+  - {x: -0.02, y: 0.1, z: 0}
+  - {x: -0.02, y: 0.7, z: 0}
 --- !u!114 &4201773838606648079 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
