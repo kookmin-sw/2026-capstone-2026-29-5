@@ -152,10 +152,12 @@ MonoBehaviour:
   punch: 0
   charge: 0
   interaction: 0
+  useActive: 0
   selfHarm: 0
   crouch: 0
   shift: 0
   pause: 0
+  throwAction: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -418,7 +420,7 @@ MonoBehaviour:
   EnableDistanceSpeedBoost: 1
   ChaseBoostMinDistance: 5
   ChaseBoostMaxDistance: 20
-  ChaseBoostMaxMultiplier: 1.4
+  ChaseBoostMaxMultiplier: 1.8
   ChaseBoostCurveExponent: 0.7
   ChaseBoostOnlyWhenApproaching: 1
   ChaseBoostScaleByAngle: 1
@@ -433,8 +435,12 @@ MonoBehaviour:
   FootstepAudioVolume: 0.5
   JumpHeight: 1.2
   Gravity: -15
-  JumpTimeout: 0.5
+  JumpTimeout: 0.1
   FallTimeout: 0.15
+  EnableMultiJump: 0
+  MaxJumpCount: 2
+  MultiJumpInterval: 0.15
+  ConsumeJumpOnWalkOff: 0
   Grounded: 1
   GroundedOffset: -0.1
   GroundedRadius: 0.25
@@ -540,11 +546,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da6ba53e2e698b45911e5c784072fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  useActiveKey: 113
-  pickUpKey: 101
 --- !u!114 &3942027542885564488
 MonoBehaviour:
   m_ObjectHideFlags: 0
