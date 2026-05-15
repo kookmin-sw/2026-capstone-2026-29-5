@@ -146,7 +146,8 @@ public class UnifiedCharacterView : MonoBehaviour
         bool useRootMotion = stateInfo.IsName("Combo Attack 4")
                         || stateInfo.IsTag("Stun")
                         || stateInfo.IsTag("Hit")
-                        || stateInfo.IsTag("Die");
+                        || stateInfo.IsTag("Die")
+                        || stateInfo.IsName("Strong Attackr");
         anim.applyRootMotion = useRootMotion;
 
         if (stateInfo.fullPathHash != _prevStateHash)

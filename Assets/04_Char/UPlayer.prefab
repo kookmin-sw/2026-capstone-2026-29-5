@@ -1561,12 +1561,11 @@ MonoBehaviour:
   corner: 1
   loop: 1
   points:
-  - {x: 0, y: -1.5, z: 0}
-  - {x: 0.1, y: -0.9, z: 0}
-  - {x: 0.1, y: -0.3, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: -0.1, y: -0.3, z: 0}
-  - {x: -0.1, y: -0.9, z: 0}
+  - {x: 0, y: -1.2, z: 0}
+  - {x: 0.05, y: -0.9, z: 0}
+  - {x: 0.05, y: -0.1, z: 0}
+  - {x: -0.05, y: -0.1, z: 0}
+  - {x: -0.05, y: -0.9, z: 0}
 --- !u!1 &5272388488738693894 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1044973271961734481, guid: e75bb88d724d4734dbf99ea8ff3f10d4, type: 3}

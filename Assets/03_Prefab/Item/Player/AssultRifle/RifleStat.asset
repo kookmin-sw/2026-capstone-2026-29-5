@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   availableTime: 10000
   useableTime: 1000
-  damage: 0
+  damage: 10
   speed: 0
   range: 0
   rollSpeed: 0
