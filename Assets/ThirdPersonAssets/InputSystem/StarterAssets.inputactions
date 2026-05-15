@@ -105,9 +105,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Throw",
+                    "name": "UseActive",
                     "type": "Button",
-                    "id": "3425f914-b383-45e8-82c8-6f3fa9da5883",
+                    "id": "6bc27f64-714e-44f5-8551-2d9d60bfa7ba",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -392,12 +392,12 @@
                 },
                 {
                     "name": "",
-                    "id": "b5d2c395-c265-48e2-a58b-17013025290e",
-                    "path": "<Mouse>/rightButton",
+                    "id": "6e002dc6-f2ed-4577-9371-9aa090176bb7",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
-                    "action": "Throw",
+                    "action": "UseActive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

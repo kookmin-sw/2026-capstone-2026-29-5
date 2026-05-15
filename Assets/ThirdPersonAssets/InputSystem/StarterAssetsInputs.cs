@@ -14,7 +14,8 @@ namespace StarterAssets
         public bool sprint;
         public bool punch;
         public bool charge;
-        public bool interaction;
+        public bool interaction; 
+        public bool useActive;
         public bool selfHarm;
         public bool crouch;
         public bool shift;
@@ -39,6 +40,7 @@ namespace StarterAssets
         public void OnPunch(InputValue value) { PunchInput(value.isPressed); }
         public void OnCharge(InputValue value) { ChargeInput(value.isPressed); }
         public void OnInteraction(InputValue value) { InteractionInput(value.isPressed); }
+        public void OnUseActive(InputValue value) { UseActiveInput(value.isPressed); }
         public void OnSelfHarm(InputValue value) { SelfHarmInput(value.isPressed); }
         public void OnCrouch(InputValue value) { CrouchInput(value.isPressed); }
         public void OnShift(InputValue value) { ShiftInput(value.isPressed); }
@@ -58,6 +60,7 @@ namespace StarterAssets
         public void PunchInput(bool newPunchState) { punch = newPunchState; }
         public void ChargeInput(bool newChargeState) { charge = newChargeState; }
         public void InteractionInput(bool newInteractionState) { interaction = newInteractionState; }
+        public void UseActiveInput(bool newUseActiveState) { useActive = newUseActiveState; }
         public void SelfHarmInput(bool newSelfHarmState) { selfHarm = newSelfHarmState; }
         public void CrouchInput(bool newCrouchState) { if (newCrouchState) crouch = !crouch; }
         public void ShiftInput(bool newShiftState) { shift = newShiftState; }
