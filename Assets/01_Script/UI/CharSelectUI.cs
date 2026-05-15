@@ -25,13 +25,18 @@ public class CharSelectUI : MonoBehaviour
     public RectTransform p1CursorIndicator;
     public RectTransform p2CursorIndicator;
 
-    [Header("캐릭터 정보 텍스트")]
-    public Text characterNameText;
-    public Text characterDescText;
+    [Header("UI Sound Effects")]
+    public AudioSource uiSfxSource;
+    public AudioClip cursorMoveClip;
+    public AudioClip selectClip;
 
-    [Header("카운트다운")]
-    public GameObject countdownPanel;
-    public Text countdownText;
+    [Range(0f, 1f)]
+    public float cursorMoveVolume = 0.5f;
+
+    [Range(0f, 1f)]
+    public float selectVolume = 0.6f;
+
+    private readonly int[] lastCursorIndexes = { -1, -1 };
 
     // ── 연출용 레퍼런스 ──────────────────────────────────────────
     [Header("매치 스타트 연출")]
@@ -91,6 +96,13 @@ public class CharSelectUI : MonoBehaviour
     private void Start()
     {
         Debug.Log("[CharSelectUI] Start - CharSelectManager 대기 시작");
+    }
+
+    // UI 사운드 재생
+    private void PlaySfx(AudioClip clip, float volume = 1f)
+    {
+        if (uiSfxSource == null || clip == null) return;
+        uiSfxSource.PlayOneShot(clip, volume);
     }
 
     // ── 네트워크 콜백 ─────────────────────────────────────────────
@@ -155,7 +167,6 @@ public class CharSelectUI : MonoBehaviour
 
         if (p1ReadyBadge) p1ReadyBadge.SetActive(false);
         if (p2ReadyBadge) p2ReadyBadge.SetActive(false);
-        if (countdownPanel) countdownPanel.SetActive(false);
         if (vsPanel) vsPanel.SetActive(false);
     }
 
@@ -265,6 +276,15 @@ public class CharSelectUI : MonoBehaviour
         var indicator = (playerIndex == 0) ? p1CursorIndicator : p2CursorIndicator;
         MoveCursorIndicator(indicator, cursorIndex);
         
+        if (lastCursorIndexes[playerIndex] >= 0 &&
+        lastCursorIndexes[playerIndex] != cursorIndex &&
+        playerIndex == localPlayerIndex)
+        {
+            PlaySfx(cursorMoveClip, cursorMoveVolume);
+        }
+
+        lastCursorIndexes[playerIndex] = cursorIndex;
+
         if (!isLocked)
             ApplyCharacterVisual(playerIndex, cursorIndex);
     }
@@ -284,7 +304,12 @@ public class CharSelectUI : MonoBehaviour
             ApplyCharacterVisual(playerIndex, selectedIndex);
 
         if (isReady && lastSelectedIndexes[playerIndex] < 0)
+        {
+            if (playerIndex == localPlayerIndex)
+                PlaySfx(selectClip, selectVolume);
+                
             PlayPortraitSelectEffect(playerIndex, portrait);
+        }
 
         lastSelectedIndexes[playerIndex] = selectedIndex;
     }
@@ -481,10 +506,6 @@ public class CharSelectUI : MonoBehaviour
         if (p1ReadyBadge != null) p1ReadyBadge.SetActive(false);
         if (p2ReadyBadge != null) p2ReadyBadge.SetActive(false);
 
-        // 캐릭터 이름 / 설명 텍스트
-        if (characterNameText != null) characterNameText.gameObject.SetActive(false);
-        if (characterDescText  != null) characterDescText.gameObject.SetActive(false);
-
         // Inspector에서 추가로 지정한 오브젝트들
         if (selectionOnlyObjects != null)
             foreach (var go in selectionOnlyObjects)
@@ -532,8 +553,6 @@ public class CharSelectUI : MonoBehaviour
     private void RefreshLocalInfo(int index)
     {
         if (characters == null || index < 0 || index >= characters.Length) return;
-        if (characterNameText != null) characterNameText.text = characters[index].characterName;
-        if (characterDescText  != null) characterDescText.text  = characters[index].description;
     }
 
     /// <summary>
