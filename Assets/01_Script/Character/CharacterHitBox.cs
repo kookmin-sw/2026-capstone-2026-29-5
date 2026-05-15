@@ -8,6 +8,19 @@ public class CharacterHitBox : MonoBehaviour
     public float damage = 10f; // 주먹 한 방의 대미지
     public Collider hitboxCollider; // 주먹에 달린 콜라이더
 
+    [Header("Knockback Settings")]
+    [Tooltip("적중 시 가할 수평 넉백 세기. 0이면 넉백 없음.")]
+    public float knockbackPower = 0f;
+
+    [Tooltip("적중 시 위로 띄울 속도. 0이면 안 띄움.")]
+    public float knockbackVerticalPower = 0f;
+
+    [Tooltip("피격자가 이동 입력을 잠그는 시간(초). 음수면 컨트롤러 기본값 사용.")]
+    public float knockbackInputLockDuration = -1f;
+
+    [Tooltip("넉백 방향 결정 방식. true: 공격자→피격자, false: 히트박스→피격자")]
+    public bool knockbackFromOwner = true;
+
     [Header("Hit Effect")]
     public int effectIndex = 0;
     public GameObject hitEffectPrefab;  // VFX_ImpactClassic01 프리팹들을 여기에 드래그
@@ -73,6 +86,28 @@ public class CharacterHitBox : MonoBehaviour
             iTarget.RequestTakeDamage(finalDamage);
 
             iTarget.RequestSpawnHitEffect(hitPoint, hitNormal, effectIndex);
+
+            //넉백 처리.
+            if (knockbackPower > 0f || knockbackVerticalPower > 0f)
+            {
+                Vector3 victimPos = other.transform.root.position;
+                Vector3 sourcePos = knockbackFromOwner && ownerObj != null
+                    ? ownerObj.transform.position
+                    : hitboxCollider.transform.position;
+
+                Vector3 dir = victimPos - sourcePos;
+                dir.y = 0f;
+                if (dir.sqrMagnitude < 0.0001f)
+                    dir = ownerObj != null ? ownerObj.transform.forward : transform.forward;
+                else
+                    dir.Normalize();
+
+                iTarget.RequestApplyKnockback(
+                    horizontalImpulse: dir * knockbackPower,
+                    verticalImpulse: knockbackVerticalPower,
+                    inputLockDuration: knockbackInputLockDuration);
+            }
+
             PlayAttackHitSound(hitPoint);
             hitboxCollider.enabled = false;
             return;

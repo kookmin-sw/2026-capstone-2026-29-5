@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8707927341673172741}
   - component: {fileID: 1557915836691104627}
   - component: {fileID: 4442176736857855970}
+  - component: {fileID: -3049813265045278778}
   - component: {fileID: 4519079792559867358}
   - component: {fileID: 4637251758803257737}
   - component: {fileID: 4665905575940984341}
@@ -153,10 +154,12 @@ MonoBehaviour:
   punch: 0
   charge: 0
   interaction: 0
+  useActive: 0
   selfHarm: 0
   crouch: 0
   shift: 0
   pause: 0
+  throwAction: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -285,7 +288,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &4519079792559867358
+--- !u!114 &-3049813265045278778
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -293,6 +296,40 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3354428030682575210}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 2878894047224720791}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 1
+  useFixedUpdate: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &4519079792559867358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354428030682575210}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
@@ -447,6 +484,8 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  externalImpulseDamping: 5
+  defaultKnockbackStunDuration: 0.25
 --- !u!114 &6650020048152311539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,11 +580,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da6ba53e2e698b45911e5c784072fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  useActiveKey: 113
-  pickUpKey: 101
 --- !u!114 &4115245814957560473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,6 +1916,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   hitboxCollider: {fileID: 5228102658854400131}
+  knockbackPower: 5
+  knockbackVerticalPower: 0
+  knockbackInputLockDuration: 0.2
+  knockbackFromOwner: 1
   effectIndex: 3
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
@@ -1962,6 +2000,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   hitboxCollider: {fileID: 4526037637296270256}
+  knockbackPower: 5
+  knockbackVerticalPower: 0
+  knockbackInputLockDuration: 0.2
+  knockbackFromOwner: 1
   effectIndex: 2
   hitEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   effectDuration: 1
@@ -2039,6 +2081,10 @@ PrefabInstance:
     - target: {fileID: 1825063924753737954, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3745027184528515937, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
+      propertyPath: damage
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7637043651973179773, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
       propertyPath: m_Name

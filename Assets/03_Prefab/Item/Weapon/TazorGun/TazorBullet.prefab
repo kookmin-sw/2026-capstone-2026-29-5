@@ -16474,7 +16474,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 60, y: 60, z: 60}
+  m_Size: {x: 100, y: 100, z: 309.7}
   m_Center: {x: 0, y: 8.37, z: 0}
 --- !u!114 &448637156442605414
 MonoBehaviour:
@@ -16526,7 +16526,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   itemStat: {fileID: 11400000, guid: 47cbb397a8bc1bd45a1bd1f015116bdd, type: 2}
-  hitBox: {fileID: 0}
   stunDuration: 2
   stunVfxPrefab: {fileID: 2184945166276111683, guid: d11abc1fc2de55841ad09f94cc6e0bb9, type: 3}
   stunVfxPositionOffset: {x: 0, y: 0, z: 0}
