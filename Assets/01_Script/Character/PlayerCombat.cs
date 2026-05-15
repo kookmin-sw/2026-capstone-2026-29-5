@@ -89,7 +89,8 @@ public class PlayerCombat : NetworkBehaviour
 
     private void OnChargeStarted(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer || _model.IsDead || IsAttacking || IsStrongAttacking) return;
+        if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
+        if (_model.IsDead || IsAttacking || IsStrongAttacking) return;
 
         // 누르기 시작: 기 모으기 이펙트(1단계) 켜기
         _chargeStarted = true;

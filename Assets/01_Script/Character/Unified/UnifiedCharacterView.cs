@@ -67,6 +67,13 @@ public class UnifiedCharacterView : MonoBehaviour
     // null이면 캐릭터 기본 attackSounds(맨손 펀치)가 재생됨.
     private UnifiedWeaponMelee _meleeOverride;
 
+    //근접무기 장착 여부 확인. - 던지기 할 때 사용
+    public bool HasMeleeWeaponEquipped => _meleeOverride != null;
+
+    //근접무기 인스턴스. 던지기에 사용
+    public UnifiedWeaponMelee EquippedMeleeWeapon => _meleeOverride;
+
+
     // 현재 활성 스턴 VFX 인스턴스 (재스폰 시 파괴용)
     private GameObject _activeStunVfx;
 
@@ -113,6 +120,7 @@ public class UnifiedCharacterView : MonoBehaviour
         model.OnStunVfxSpawnRequested += HandleStunVfxSpawn;
         model.OnHasGunChanged += HandleHasGun;
         model.OnGunShoot += HandleGunShoot;
+        model.OnMeleeThrow += HandleMeleeThrow;
     }
 
     private void OnDisable()
@@ -131,6 +139,7 @@ public class UnifiedCharacterView : MonoBehaviour
         model.OnStunVfxSpawnRequested -= HandleStunVfxSpawn;
         model.OnHasGunChanged -= HandleHasGun;
         model.OnGunShoot -= HandleGunShoot;
+        model.OnMeleeThrow -= HandleMeleeThrow;
     }
 
     private void OnDestroy()
@@ -314,6 +323,12 @@ public class UnifiedCharacterView : MonoBehaviour
         _activeStunVfx = Instantiate(prefab, transform);
         _activeStunVfx.transform.localPosition = posOffset;
         _activeStunVfx.transform.localRotation = Quaternion.Euler(rotOffset);
+    }
+
+    private void HandleMeleeThrow()
+    {
+        anim.ResetTrigger("Throw");
+        anim.SetTrigger("Throw");
     }
 
     private void ClearStunVfx()

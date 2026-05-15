@@ -57,6 +57,9 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     [SyncVar(hook = nameof(OnStunChangedHook))]
     private bool isStunned = false;
 
+    [SyncVar(hook = nameof(OnMeleeThrowHook))]
+    private int meleeThrowCount = 0;
+
     // ---- 설정 ----
     [Header("Lives Setting")]
     public int maxLives = 1;
@@ -114,6 +117,7 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     public event Action OnGunShoot;
     public event Action<bool> OnStunChanged;
     public event Action<GameObject, Vector3, Vector3> OnStunVfxSpawnRequested;
+    public event Action OnMeleeThrow;
 
     // ============================================================
     // 라이프사이클
@@ -332,6 +336,24 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
             }
         }
     }
+    public void RequestMeleeThrow()
+    {
+        if (AuthorityGuard.IsOffline)
+        {
+            meleeThrowCount++;
+            OnMeleeThrow?.Invoke();
+        }
+        else if (isServer)
+        {
+            // 서버에서 호출된 경우Cmd를 다시 부르지 않고 SyncVar를 직접 증가시켜 모든 클라이언트에 hook 발화.
+            meleeThrowCount++;
+        }
+        else
+        {
+            // 클라이언트에서 직접 호출된 경우.
+            CmdMeleeThrow();
+        }
+    }
 
     // ============================================================
     // 오프라인 데미지 로직
@@ -463,6 +485,7 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     [Command] private void CmdSetBowDraw(bool s) { isBowDraw = s; }
     [Command] private void CmdBowRelease() { isBowDraw = false; bowReleaseCount++; }
     [Command] private void CmdGunShoot() { gunShootCount++; }
+    [Command] private void CmdMeleeThrow() { meleeThrowCount++; }
 
     [Command(requiresAuthority = false)]
     private void CmdTakeDamage(float amount)
@@ -555,6 +578,7 @@ public class UnifiedCharacterModel : NetworkBehaviour, ICharacterModel
     private void OnGunShootHook(int oldV, int newV) => OnGunShoot?.Invoke();
     private void OnLivesChangedHook(int oldV, int newV) => OnLivesChanged?.Invoke(newV);
     private void OnStunChangedHook(bool oldV, bool newV) => OnStunChanged?.Invoke(newV);
+    private void OnMeleeThrowHook(int oldV, int newV) => OnMeleeThrow?.Invoke();
 
     private void OnHealthChangedHook(float oldV, float newV)
     {

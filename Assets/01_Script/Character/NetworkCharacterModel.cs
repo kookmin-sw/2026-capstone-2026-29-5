@@ -47,6 +47,9 @@ public class NetworkCharacterModel : NetworkBehaviour, ICharacterModel
     [SyncVar(hook = nameof(OnLivesChangedHook))]
     public int remaingLives;
 
+    [SyncVar(hook = nameof(OnMeleeThrowHook))]
+    private int meleeThrowCount = 0;
+
     // ---- 설정 ----
     [Header("Lives Setting")]
     public int maxLives = 1;
@@ -98,6 +101,7 @@ public class NetworkCharacterModel : NetworkBehaviour, ICharacterModel
     public event Action<bool> OnStunChanged;
     public event Action<bool> OnHasGunChanged;
     public event Action OnGunShoot;
+    public event Action OnMeleeThrow;
     public event Action<GameObject, Vector3, Vector3> OnStunVfxSpawnRequested;
 
     // ============================================================
@@ -200,6 +204,7 @@ public class NetworkCharacterModel : NetworkBehaviour, ICharacterModel
 
     [ClientRpc]
     void RpcPlayStrongAttack() { OnStrongAttack?.Invoke(); }
+    [Command] public void CmdMeleeThrow() { meleeThrowCount++; }
 
     // ============================================================
     // 스턴 로직 (서버 권한)
@@ -264,7 +269,7 @@ public class NetworkCharacterModel : NetworkBehaviour, ICharacterModel
     void OnGunShootHook(int oldV, int newV) => OnGunShoot?.Invoke();
     void OnStunChangedHook(bool oldV, bool newV) => OnStunChanged?.Invoke(newV);
     void OnLivesChangedHook(int oldV, int newV) => OnLivesChanged?.Invoke(newV);
-
+    void OnMeleeThrowHook(int oldV, int newV) => OnMeleeThrow?.Invoke();
     void OnHealthChangedHook(float oldV, float newV)
     {
         Debug.Log($"Health Changed: {oldV} -> {newV}");
@@ -355,7 +360,7 @@ public class NetworkCharacterModel : NetworkBehaviour, ICharacterModel
     public void RequestSelfHarm(float damage) => CmdSelfHarm(damage);
     public void RequestTakeDamage(float damage) => CmdTakeDamage(damage);
     public void RequestFallDamage(float damage) => CmdFallDamage(damage);
-
+    public void RequestMeleeThrow() => CmdMeleeThrow();
     public void RequestSetHasBow(bool state)
     {
         if (isServer) ServerSetHasBow(state);

@@ -16,7 +16,7 @@ public class UnifiedPlayerCombat : MonoBehaviour
     private PlayerInput _playerInput;
     private InputAction _chargeAction;
     private Animator _animator;
-    private UnifiedThirdPersonController _controller;
+    private UnifiedThirdPersonController _controller; 
 
     [Header("공격 설정")]
     [SerializeField] private float comboResetTime = 1.0f;
@@ -34,12 +34,10 @@ public class UnifiedPlayerCombat : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _controller = GetComponent<UnifiedThirdPersonController>();
-
         if (_playerInput != null && _playerInput.actions != null)
+        {
             _chargeAction = _playerInput.actions["Charge"];
-
-        if (_model == null)
-            Debug.LogError($"[{nameof(UnifiedPlayerCombat)}] ICharacterModel이 없음.");
+        }
     }
 
     private void OnEnable()
@@ -49,6 +47,10 @@ public class UnifiedPlayerCombat : MonoBehaviour
             _chargeAction.started += OnChargeStarted;
             _chargeAction.performed += OnChargeReady;
             _chargeAction.canceled += OnChargeCanceled;
+        }
+        else
+        {
+            Debug.LogError("=== _chargeAction이 NULL!");
         }
     }
 
@@ -132,25 +134,34 @@ public class UnifiedPlayerCombat : MonoBehaviour
         if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
         if (_model.IsDead || IsAttacking || IsStrongAttacking) return;
 
+        // 근접무기 장착 중이면: Charge 대신 throwAction 플래그를 세움
+        // 무기 본인(UnifiedWeaponMelee.Update)이 다음 프레임에 읽고 소비.
+        if (_view != null && _view.HasMeleeWeaponEquipped)
+        {
+            _input.throwAction = true;
+            return;
+        }
+
         _chargeStarted = true;
         _model.RequestSetCharging(true);
         if (_view != null) _view.UpdateChargeEffect(true, false);
     }
 
     private void OnChargeReady(InputAction.CallbackContext context)
-    {
-        if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
-        if (_model.IsDead || IsAttacking || IsStrongAttacking) return;
+{
+    if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
+    if (_model.IsDead || IsAttacking || IsStrongAttacking) return;
+    if (!_chargeStarted) return;   // ← 추가: Charge가 시작되지 않았으면 무시 (무기 장착 중이었던 경우)
 
-        if (_view != null) _view.UpdateChargeEffect(true, true);
-        _input.punch = false;
-    }
+    if (_view != null) _view.UpdateChargeEffect(true, true);
+    _input.punch = false;
+}
 
     private void OnChargeCanceled(InputAction.CallbackContext context)
     {
         if (!AuthorityGuard.IsLocallyControlled(gameObject)) return;
         if (_model.IsDead) return;
-
+        if (!_chargeStarted) return;   // ← 추가: Charge가 시작되지 않았으면 무시 (무기 장착 중이었던 경우)
         bool willStrongAttack = _chargeStarted               // ← 여기 추가
                             && !IsAttacking
                             && !IsStrongAttacking

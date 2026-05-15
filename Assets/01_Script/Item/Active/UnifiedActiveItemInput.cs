@@ -15,7 +15,7 @@ public class UnifiedActiveItemInput : NetworkBehaviour
 {
     [Header("입력 키 (임시)")]
     [SerializeField] private KeyCode useActiveKey = KeyCode.Q;
-    [SerializeField] private KeyCode pickUpKey = KeyCode.E;
+    [SerializeField] private KeyCode pickUpKey = KeyCode.X;
 
     private UnifiedItemManager unifiedManager;
     private ItemManager legacyManager;
