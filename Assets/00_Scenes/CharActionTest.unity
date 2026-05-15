@@ -915,17 +915,16 @@ PrefabInstance:
       propertyPath: sceneId
       value: 3326775106
       objectReference: {fileID: 0}
-    - target: {fileID: 5398327014609593162, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
-      propertyPath: oneShotPerMatch
-      value: 0
+    - target: {fileID: 5988916890821418750, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
+      propertyPath: JumpTimeout
+      value: 0.1
       objectReference: {fileID: 0}
-    - target: {fileID: 5398327014609593162, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
-      propertyPath: ultimateWeaponPrefab
-      value: 
-      objectReference: {fileID: 3325291320366335928, guid: d4e8f5f085df0b144af0be86b85dfe15, type: 3}
+    - target: {fileID: 5988916890821418750, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
+      propertyPath: ChaseBoostMaxMultiplier
+      value: 1.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3651399381618240389, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
@@ -2260,6 +2259,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1375265052286321119, guid: 35a5296dbb7c39f45ac9a1f1879a3338, type: 3}
+      propertyPath: JumpTimeout
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1375265052286321119, guid: 35a5296dbb7c39f45ac9a1f1879a3338, type: 3}
+      propertyPath: ChaseBoostMaxMultiplier
+      value: 1.8
+      objectReference: {fileID: 0}
     - target: {fileID: 6466662519140030887, guid: 35a5296dbb7c39f45ac9a1f1879a3338, type: 3}
       propertyPath: sceneId
       value: 2040784721
@@ -2868,6 +2875,14 @@ PrefabInstance:
     - target: {fileID: 1250688654659255570, guid: b71f2cc63d290a140b58d7d8a206636a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072723444800183262, guid: b71f2cc63d290a140b58d7d8a206636a, type: 3}
+      propertyPath: JumpTimeout
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072723444800183262, guid: b71f2cc63d290a140b58d7d8a206636a, type: 3}
+      propertyPath: ChaseBoostMaxMultiplier
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 7046033076753342609, guid: b71f2cc63d290a140b58d7d8a206636a, type: 3}
       propertyPath: m_Name

@@ -186,6 +186,7 @@ MonoBehaviour:
   enableOnEnter: 1
   disableOnExit: 1
   restoreOnExit: 0
+  _previousRootMotion: 0
 --- !u!1101 &-8362273032331189398
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
