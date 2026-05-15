@@ -240,6 +240,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   hitboxCollider: {fileID: 8861868124052908891}
+  knockbackPower: 15
+  knockbackVerticalPower: 0
+  knockbackInputLockDuration: -1
+  knockbackFromOwner: 1
   effectIndex: 0
   hitEffectPrefab: {fileID: 0}
   effectDuration: 2
@@ -306,7 +310,6 @@ MonoBehaviour:
   atkSpeed: {fileID: 0}
   attachSlot: 0
   boneFallbackPath: 
-  throwKey: 102
   audioSource: {fileID: -6805908753727395178}
   swingSounds:
   - {fileID: 8300000, guid: 3340f7c8fd621aa4a8539ef6995395f5, type: 3}

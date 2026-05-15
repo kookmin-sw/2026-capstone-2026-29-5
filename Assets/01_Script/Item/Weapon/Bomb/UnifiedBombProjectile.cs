@@ -40,6 +40,12 @@ public class UnifiedBombProjectile : NetworkBehaviour
     private float _explosionLifetime = 2f;
     private GameObject _ownerObj;
 
+    //넉백 파라미터
+    private float _knockbackPower;
+    private float _knockbackVertical;
+    private float _knockbackLockDuration;
+
+
     // 런타임 상태
     private Vector3 _currentVelocity;   // 매 프레임 누적되는 현재 속도, 각 클라이언트 로컬에서 사용
     private bool _exploded;
@@ -71,7 +77,10 @@ public class UnifiedBombProjectile : NetworkBehaviour
         float damage,
         GameObject explosionPrefab,
         float explosionLifetime,
-        GameObject ownerObj)
+        GameObject ownerObj,
+        float knockbackPower = 0f,
+        float knockbackVertical = 0f,
+        float knockbackLockDuration = -1f)
     {
         _fuseDuration = Mathf.Max(0f, fuseDuration);
         _radius = radius;
@@ -79,6 +88,10 @@ public class UnifiedBombProjectile : NetworkBehaviour
         _explosionPrefab = explosionPrefab;
         _explosionLifetime = explosionLifetime;
         _ownerObj = ownerObj;
+
+        _knockbackPower = knockbackPower;
+        _knockbackVertical = knockbackVertical;
+        _knockbackLockDuration = knockbackLockDuration;
 
         Vector3 g = Physics.gravity;
         float now = (float)(AuthorityGuard.IsOffline ? Time.timeAsDouble : NetworkTime.time);
@@ -220,15 +233,55 @@ public class UnifiedBombProjectile : NetworkBehaviour
 
         Vector3 pos = transform.position;
 
-        // 데미지 판정
+        // 데미지 + 넉백 판정
         Collider[] hits = Physics.OverlapSphere(pos, _radius);
+
+        //하나의 캐릭터에 대해 한 번의 넉백 판정만을 일으키기 위한 해시셋
+        System.Collections.Generic.HashSet<GameObject> processed
+       = new System.Collections.Generic.HashSet<GameObject>();
+
         foreach (Collider col in hits)
         {
             if (!col.CompareTag("Player")) continue;
+
             ICharacterModel player = col.GetComponentInParent<ICharacterModel>();
-            if (player != null)
+            if (player == null) continue;
+
+            // 중복 적용 방지: 같은 root는 한 번만
+            Component playerComp = player as Component;
+            if (playerComp == null) continue;
+            GameObject playerRoot = playerComp.transform.root.gameObject;
+            if (processed.Contains(playerRoot)) continue;
+            processed.Add(playerRoot);
+
+            // 거리 기반 감쇠 계산
+            Vector3 toVictim = playerRoot.transform.position - pos;
+            float distance = toVictim.magnitude;
+            float falloff = _radius > 0f
+                ? 1f - Mathf.Clamp01(distance / _radius)
+                : 1f;
+
+            // 데미지 (감쇠 적용)
+            player.RequestTakeDamage(_damage * falloff);
+
+            // 넉백
+            if (_knockbackPower > 0f || _knockbackVertical > 0f)
             {
-                player.RequestTakeDamage(_damage);
+                Vector3 dir = new Vector3(toVictim.x, 0f, toVictim.z);
+                if (dir.sqrMagnitude < 0.0001f)
+                {
+                    // 피해자가 폭탄과 거의 같은 위치 → 임의 수평 방향 (정중앙 직격)
+                    dir = Vector3.forward;
+                }
+                else
+                {
+                    dir.Normalize();
+                }
+
+                player.RequestApplyKnockback(
+                    horizontalImpulse: dir * _knockbackPower * falloff,
+                    verticalImpulse: _knockbackVertical * falloff,
+                    inputLockDuration: _knockbackLockDuration);
             }
         }
 

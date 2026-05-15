@@ -40,6 +40,7 @@ public interface ICharacterModel
     void RequestUseActive();
     void RequestApplyStun(float duration, GameObject vfxPrefab, Vector3 vfxPositionOffset, Vector3 vfxRotationOffset);
     void RequestSetHasBomb(bool state);
+    void RequestApplyKnockback(Vector3 horizontalImpulse, float verticalImpulse, float inputLockDuration);
 
     // ---- 이벤트 ----
     event Action<int> OnComboChanged;

@@ -102,7 +102,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9463602
+      - time: 0.7505427
         functionName: TrailOff
         data: 
         objectReferenceParameter: {instanceID: 0}

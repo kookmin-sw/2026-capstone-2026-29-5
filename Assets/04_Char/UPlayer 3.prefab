@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7505074961941872041}
   - component: {fileID: 6562449300323122143}
   - component: {fileID: 6466662519140030887}
+  - component: {fileID: 4099364772278258312}
   - component: {fileID: 5798365815444061422}
   - component: {fileID: 6612363529411960550}
   - component: {fileID: 5743782909195610571}
@@ -152,10 +153,12 @@ MonoBehaviour:
   punch: 0
   charge: 0
   interaction: 0
+  useActive: 0
   selfHarm: 0
   crouch: 0
   shift: 0
   pause: 0
+  throwAction: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -284,7 +287,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &5798365815444061422
+--- !u!114 &4099364772278258312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -292,6 +295,40 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444122467208145566}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 732492846352140256}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 1
+  useFixedUpdate: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &5798365815444061422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444122467208145566}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
@@ -418,7 +455,7 @@ MonoBehaviour:
   EnableDistanceSpeedBoost: 1
   ChaseBoostMinDistance: 5
   ChaseBoostMaxDistance: 20
-  ChaseBoostMaxMultiplier: 1.4
+  ChaseBoostMaxMultiplier: 1.8
   ChaseBoostCurveExponent: 0.7
   ChaseBoostOnlyWhenApproaching: 1
   ChaseBoostScaleByAngle: 1
@@ -433,8 +470,12 @@ MonoBehaviour:
   FootstepAudioVolume: 0.5
   JumpHeight: 1.2
   Gravity: -15
-  JumpTimeout: 0.5
+  JumpTimeout: 0.1
   FallTimeout: 0.15
+  EnableMultiJump: 0
+  MaxJumpCount: 2
+  MultiJumpInterval: 0.15
+  ConsumeJumpOnWalkOff: 0
   Grounded: 1
   GroundedOffset: -0.1
   GroundedRadius: 0.25
@@ -446,6 +487,8 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  externalImpulseDamping: 5
+  defaultKnockbackStunDuration: 0.25
 --- !u!114 &377248147729098622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,7 +502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comboResetTime: 1
-  strongAttackHoldTime: 1.5
+  strongAttackHoldTime: 1
   selfHarmDamage: 20
 --- !u!114 &3556301501662293330
 MonoBehaviour:
@@ -540,11 +583,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da6ba53e2e698b45911e5c784072fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  useActiveKey: 113
-  pickUpKey: 101
 --- !u!114 &3942027542885564488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +745,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[0]
+      value: Strong Attackr
+      objectReference: {fileID: 0}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[1]
       value: Ultimate
       objectReference: {fileID: 0}
@@ -725,6 +767,14 @@ PrefabInstance:
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: attackHitSounds.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[3]
+      value: Combo Attack 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: allowedStates.Array.data[4]
+      value: Strong Attackr
       objectReference: {fileID: 0}
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.data[5]
@@ -848,7 +898,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3027157600895519139, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8452091367517958602, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 505284165118010055, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
@@ -914,12 +965,11 @@ MonoBehaviour:
   corner: 1
   loop: 1
   points:
-  - {x: 0, y: 1.3, z: 0}
-  - {x: 0.1, y: 0.7, z: 0}
-  - {x: 0.1, y: 0.1, z: 0}
-  - {x: 0, y: -0.2, z: 0}
-  - {x: -0.1, y: 0.1, z: 0}
-  - {x: -0.1, y: 0.7, z: 0}
+  - {x: 0, y: 1.1, z: 0}
+  - {x: 0.03, y: 0.7, z: 0}
+  - {x: 0.03, y: 0.1, z: 0}
+  - {x: -0.03, y: 0.1, z: 0}
+  - {x: -0.03, y: 0.7, z: 0}
 --- !u!1 &3466501473924560290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 505284165118010055, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
@@ -942,12 +992,11 @@ MonoBehaviour:
   corner: 1
   loop: 1
   points:
-  - {x: 0, y: 1.3, z: 0}
-  - {x: 0.05, y: 0.7, z: 0}
-  - {x: 0.05, y: 0.1, z: 0}
-  - {x: 0, y: -0.2, z: 0}
-  - {x: -0.05, y: 0.1, z: 0}
-  - {x: -0.05, y: 0.7, z: 0}
+  - {x: 0, y: 1.1, z: 0}
+  - {x: 0.02, y: 0.7, z: 0}
+  - {x: 0.02, y: 0.1, z: 0}
+  - {x: -0.02, y: 0.1, z: 0}
+  - {x: -0.02, y: 0.7, z: 0}
 --- !u!114 &4201773838606648079 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
