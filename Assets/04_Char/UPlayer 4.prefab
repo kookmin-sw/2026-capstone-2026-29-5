@@ -16,16 +16,8 @@ GameObject:
   - component: {fileID: 8707927341673172741}
   - component: {fileID: 1557915836691104627}
   - component: {fileID: 4442176736857855970}
-<<<<<<< Updated upstream
-  - component: {fileID: -3049813265045278778}
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-  - component: {fileID: 4519079792559867358}
-=======
-  - component: {fileID: -3049813265045278778}
->>>>>>> Stashed changes
   - component: {fileID: 4637251758803257737}
+  - component: {fileID: -7136270371685236836}
   - component: {fileID: 4665905575940984341}
   - component: {fileID: 8009985321600727323}
   - component: {fileID: 5988916890821418750}
@@ -295,97 +287,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
-<<<<<<< Updated upstream
---- !u!114 &-3049813265045278778
-=======
-<<<<<<< Updated upstream
---- !u!114 &4519079792559867358
-=======
---- !u!114 &-3049813265045278778
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3354428030682575210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-<<<<<<< Updated upstream
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 2878894047224720791}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 1
-  useFixedUpdate: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
---- !u!114 &4519079792559867358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3354428030682575210}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-=======
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
->>>>>>> Stashed changes
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 2878894047224720791}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-<<<<<<< Updated upstream
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
-=======
-  bufferResetMultiplier: 1
-  useFixedUpdate: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
->>>>>>> Stashed changes
 --- !u!114 &4637251758803257737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,6 +304,40 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 4795646076304006760}
+--- !u!114 &-7136270371685236836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354428030682575210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 2878894047224720791}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 1
+  useFixedUpdate: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!114 &4665905575940984341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2244,10 +2179,6 @@ PrefabInstance:
     - target: {fileID: 5166745192933960912, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
       propertyPath: m_Center.z
       value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3745027184528515937, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
-      propertyPath: damage
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7637043651973179773, guid: 45abcbddf4fe2dd448e04fc28cb22822, type: 3}
       propertyPath: m_Name

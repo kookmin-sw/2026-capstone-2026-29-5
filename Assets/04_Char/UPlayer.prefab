@@ -48,15 +48,7 @@ GameObject:
   - component: {fileID: 5858724634432584369}
   - component: {fileID: 7855732287384375741}
   - component: {fileID: -5529837541750225669}
-<<<<<<< Updated upstream
-  - component: {fileID: 7839693004817587941}
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-  - component: {fileID: 8167354500296773072}
-=======
-  - component: {fileID: 7839693004817587941}
->>>>>>> Stashed changes
+  - component: {fileID: -6861758394588651196}
   - component: {fileID: -8163085030667433099}
   - component: {fileID: 6064403931058115902}
   - component: {fileID: 7273128938097549508}
@@ -343,15 +335,7 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 3873752212823095745}
-<<<<<<< Updated upstream
---- !u!114 &7839693004817587941
-=======
-<<<<<<< Updated upstream
---- !u!114 &8167354500296773072
-=======
---- !u!114 &7839693004817587941
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+--- !u!114 &-6861758394588651196
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -360,7 +344,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7046033076753342609}
   m_Enabled: 1
   m_EditorHideFlags: 0
-<<<<<<< Updated upstream
   m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -386,54 +369,6 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!114 &8167354500296773072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7046033076753342609}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-=======
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
->>>>>>> Stashed changes
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 1250688654659255570}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-<<<<<<< Updated upstream
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
-=======
-  bufferResetMultiplier: 1
-  useFixedUpdate: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
->>>>>>> Stashed changes
 --- !u!114 &-8163085030667433099
 MonoBehaviour:
   m_ObjectHideFlags: 0
