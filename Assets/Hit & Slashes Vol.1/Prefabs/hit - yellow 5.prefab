@@ -4796,7 +4796,7 @@ GameObject:
   - component: {fileID: 199749464149880620}
   - component: {fileID: 114964595118623814}
   m_Layer: 0
-  m_Name: hit - yellow 3
+  m_Name: hit - yellow 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5056,7 +5056,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 4.5
+      scalar: 3
       minScalar: 2.5
       maxCurve:
         serializedVersion: 2
@@ -9508,7 +9508,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 062e14e6fc65aae49b10a61d92c7e4ca, type: 2}
+  - {fileID: 2100000, guid: 604f54e10f11aea4bbff2f71d3ae0cb9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10839,7 +10839,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 2
         m_NumAlphaKeys: 3
       minGradient:

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hit-5
+  m_Name: hit-1 1
   m_Shader: {fileID: 203, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 8cae7f91c49c5a745a5f8f5183ab6d72, type: 3}
+        m_Texture: {fileID: 2800000, guid: cdb742bdd7cb94542a17c47164949920, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -82,5 +82,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TintColor: {r: 0.69182384, g: 0.69182384, b: 0.69182384, a: 0.5}
+    - _TintColor: {r: 0.7106918, g: 0.7106918, b: 0.7106918, a: 0.7372549}
   m_BuildTextureStacks: []

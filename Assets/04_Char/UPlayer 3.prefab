@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 2978335328671886133}
   - component: {fileID: 4553235915107081393}
   - component: {fileID: 8529228055832766181}
+  - component: {fileID: 8629523519392307851}
   m_Layer: 6
   m_Name: UPlayer 3
   m_TagString: Player
@@ -654,6 +655,59 @@ MonoBehaviour:
   fadeOutDuration: 0.35
   scaleAlphaByDamage: 1
   damageToAlphaRatio: 0.02
+--- !u!114 &8629523519392307851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444122467208145566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1 &2316993326076443843
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,6 +756,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2841408776849543666}
     - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: hitEffectPrefab
+      value: 
+      objectReference: {fileID: 1386863584468592, guid: 870267e33195a014cb7a46b117e2f3ac, type: 3}
+    - target: {fileID: 836958307239943615, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -725,6 +783,10 @@ PrefabInstance:
       propertyPath: audioSource
       value: 
       objectReference: {fileID: 6562449300323122143}
+    - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
+      propertyPath: hitEffectPrefab
+      value: 
+      objectReference: {fileID: 1386863584468592, guid: 870267e33195a014cb7a46b117e2f3ac, type: 3}
     - target: {fileID: 961499791541720170, guid: c822ccc94298e6044a6191815437b7c4, type: 3}
       propertyPath: allowedStates.Array.size
       value: 6
