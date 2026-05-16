@@ -7,6 +7,7 @@ public class UltimateCutInUI : MonoBehaviour
     public static UltimateCutInUI Instance { get; private set; }
 
     [Header("Refs")]
+    public GameObject visualRoot;
     public CanvasGroup rootGroup;
     public Image portraitImage;
     public RectTransform portraitRect;
@@ -22,6 +23,7 @@ public class UltimateCutInUI : MonoBehaviour
     public Vector2 portraitHiddenPos = new Vector2(900f, 0f);
     public Vector2 portraitShownPos = new Vector2(-260f, 0f);
     public float barHeight = 120f;
+    public bool deactivateVisualWhenHidden = true;
 
     private Coroutine routine;
 
@@ -46,6 +48,8 @@ public class UltimateCutInUI : MonoBehaviour
 
     private IEnumerator PlayRoutine(Sprite portrait, float duration)
     {
+        SetVisualActive(true);
+
         portraitImage.enabled = portrait != null;
         if (portrait != null) portraitImage.sprite = portrait;
 
@@ -94,8 +98,23 @@ public class UltimateCutInUI : MonoBehaviour
     private void HideImmediate()
     {
         if (rootGroup != null) rootGroup.alpha = 0f;
+        if (rootGroup != null) rootGroup.blocksRaycasts = false;
         if (portraitRect != null) portraitRect.anchoredPosition = portraitHiddenPos;
         if (topBar != null) topBar.anchoredPosition = new Vector2(0f, barHeight);
         if (bottomBar != null) bottomBar.anchoredPosition = new Vector2(0f, -barHeight);
+        SetVisualActive(false);
+    }
+
+    private void SetVisualActive(bool active)
+    {
+        if (!deactivateVisualWhenHidden && !active) return;
+
+        GameObject target = visualRoot;
+        if (target == null && rootGroup != null)
+            target = rootGroup.gameObject;
+
+        if (target == null || target == gameObject) return;
+        if (target.activeSelf != active)
+            target.SetActive(active);
     }
 }
