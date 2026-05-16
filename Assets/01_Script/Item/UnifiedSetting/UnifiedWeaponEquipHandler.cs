@@ -79,6 +79,9 @@ public class UnifiedWeaponEquipHandler : MonoBehaviour
     private GameObject _hiddenLeftDefault;
     private GameObject _hiddenRightDefault;
 
+    // Trail 위임 — Equip 시 캐릭터의 trailController에 이 무기 Trail을 등록, Unequip 시 복원
+    private trailController _cachedTrailController;
+
     /// <summary>
     /// Charge 상태 설정. UnifiedBowAnimationController.ApplyPull에서 호출됨.
     /// 오프/온라인 양쪽에서 동일 경로를 타므로 별도 동기화 불필요.
@@ -194,6 +197,9 @@ public class UnifiedWeaponEquipHandler : MonoBehaviour
             HideDefaultWeapons(owner);
         }
 
+        // 캐릭터의 trailController에 이 무기의 Trail을 위임
+        AttachTrailToController(owner);
+
         // GripPoint 로컬 오프셋 캐싱 (무기 루트 기준)
         if (gripPoint != null)
         {
@@ -234,6 +240,23 @@ public class UnifiedWeaponEquipHandler : MonoBehaviour
 
         _hiddenRightDefault = TryHideSlot(attacher, WeaponSlot.RightHand);
         _hiddenLeftDefault = TryHideSlot(attacher, WeaponSlot.LeftHand);
+    }
+
+    /// <summary>
+    /// 캐릭터(owner)에 붙은 trailController를 찾아 이 무기의 Tiny.Trail을 등록한다.
+    /// 무기 GameObject가 비활성화되어도(예: 무기 교체로 숨김) 컨트롤러는 캐릭터에
+    /// 있으므로 애니메이션 이벤트가 안전하게 동작한다.
+    /// </summary>
+    private void AttachTrailToController(GameObject owner)
+    {
+        var ctrl = owner.GetComponentInChildren<trailController>(true);
+        if (ctrl == null) return;
+
+        var weaponTrail = GetComponentInChildren<Tiny.Trail>(true);
+        if (weaponTrail == null) return;
+
+        ctrl.SetTrail(weaponTrail);
+        _cachedTrailController = ctrl;
     }
 
     private GameObject TryHideSlot(WeaponAttacher attacher, WeaponSlot slot)
@@ -292,6 +315,13 @@ public class UnifiedWeaponEquipHandler : MonoBehaviour
         {
             _hiddenLeftDefault.SetActive(true);
             _hiddenLeftDefault = null;
+        }
+
+        // 캐릭터 trailController에 등록했던 Trail을 기본 무기 Trail로 복원
+        if (_cachedTrailController != null)
+        {
+            _cachedTrailController.RestoreDefaultTrail();
+            _cachedTrailController = null;
         }
 
         if (_useSetParent && transform != null)

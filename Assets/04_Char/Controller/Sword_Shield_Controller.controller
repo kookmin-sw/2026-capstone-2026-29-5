@@ -1098,7 +1098,7 @@ AnimatorStateMachine:
     m_Position: {x: -1490, y: 780, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8243775701722946115}
-    m_Position: {x: -830, y: 600, z: 0}
+    m_Position: {x: -820, y: 600, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2208104366686647209}
     m_Position: {x: -1270, y: 860, z: 0}
@@ -4738,6 +4738,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trailNames:
   - Weapon_Sword
+  - Axe_Weapon(Clone)
+  - Bat_Weapon(Clone)
+  - Dagger_Weapon(Clone)
 --- !u!1101 &7372256340232541443
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

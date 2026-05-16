@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 8763191542840037091}
   - component: {fileID: -6025878386247186959}
   - component: {fileID: 2121465417306078082}
+  - component: {fileID: -5578450432675285763}
   m_Layer: 6
   m_Name: Axe_Weapon
   m_TagString: Untagged
@@ -142,8 +143,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.39044482, y: 0.47, z: 0.0897201}
-  m_Center: {x: -0.03930351, y: -0.52, z: 0.0000021223914}
+  m_Size: {x: 0.39044777, y: 0.46999997, z: 0.2796491}
+  m_Center: {x: -0.03930352, y: -0.52000004, z: 0.000002122994}
 --- !u!114 &339421919915659980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,9 +176,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   hitboxCollider: {fileID: 6167486893064629242}
-  effectIndex: 0
-  hitEffectPrefab: {fileID: 0}
-  effectDuration: 2
+  knockbackPower: 0
+  knockbackVerticalPower: 0
+  knockbackInputLockDuration: -1
+  knockbackFromOwner: 1
+  effectIndex: 3
+  hitEffectPrefab: {fileID: 1221272536104276, guid: 9f07ac1dd3562434d84d1ca53bd1f936, type: 3}
+  effectDuration: 1
   audioSource: {fileID: 2121465417306078082}
   attackHitSounds:
   - {fileID: 8300000, guid: 88241bb14b82b1e4ca46efb69140ef95, type: 3}
@@ -220,7 +225,6 @@ MonoBehaviour:
   atkSpeed: {fileID: 0}
   attachSlot: 0
   boneFallbackPath: 
-  throwKey: 102
   audioSource: {fileID: 2121465417306078082}
   swingSounds:
   - {fileID: 8300000, guid: e65b25a7441b1dc46be9874546c604b6, type: 3}
@@ -355,3 +359,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-5578450432675285763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5544994200035857809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bff4f5a8991d7fa47baed5c5ff25979f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 253c3b5da1752334680b1284c910ab82, type: 2}
+  duration: 0.1
+  corner: 1
+  loop: 1
+  points:
+  - {x: -0.1, y: -0.8, z: 0}
+  - {x: -0.18, y: -0.65, z: 0}
+  - {x: -0.2, y: -0.5, z: 0}
+  - {x: -0.18, y: -0.35, z: 0}
+  - {x: -0.1, y: -0.2, z: 0}

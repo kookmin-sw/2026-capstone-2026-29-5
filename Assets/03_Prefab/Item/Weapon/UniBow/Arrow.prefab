@@ -134,9 +134,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   hitboxCollider: {fileID: 5139069466735473110}
+  knockbackPower: 0
+  knockbackVerticalPower: 0
+  knockbackInputLockDuration: -1
+  knockbackFromOwner: 1
   effectIndex: 3
   hitEffectPrefab: {fileID: 271054424957760564, guid: 1468eeb0963ddad41909c04ad8af0aee, type: 3}
-  effectDuration: 2
+  effectDuration: 1
   audioSource: {fileID: 0}
   attackHitSounds:
   - {fileID: 8300000, guid: 4e8ce8aaef232e94d8208162d93af45a, type: 3}
@@ -177,11 +181,14 @@ MonoBehaviour:
   loop: 1
   points:
   - {x: 0, y: 0, z: 0}
-  - {x: 0.05, y: 0.05, z: 0.5}
-  - {x: 0, y: 0, z: 1}
-  - {x: -0.05, y: -0.05, z: 0.5}
-  - {x: -0.05, y: 0.05, z: 0.5}
-  - {x: 0.05, y: -0.05, z: 0.5}
+  - {x: 0.02, y: 0.02, z: 0.25}
+  - {x: 0, y: 0, z: 0.5}
+  - {x: -0.02, y: -0.02, z: 0.25}
+  - {x: 0, y: 0, z: 0}
+  - {x: -0.02, y: 0.02, z: 0.25}
+  - {x: 0, y: 0, z: 0.5}
+  - {x: 0.02, y: -0.02, z: 0.25}
+  - {x: 0, y: 0, z: 0}
 --- !u!1001 &4583243189055386551
 PrefabInstance:
   m_ObjectHideFlags: 0

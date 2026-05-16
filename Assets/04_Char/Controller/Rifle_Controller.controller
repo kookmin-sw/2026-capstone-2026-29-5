@@ -69,6 +69,9 @@ MonoBehaviour:
   trailNames:
   - Weapon_Dagger_r
   - Weapon_Dagger_l
+  - Axe_Weapon
+  - Bat_Weapon
+  - Dagger_Weapon
 --- !u!1101 &-9087097096813035592
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

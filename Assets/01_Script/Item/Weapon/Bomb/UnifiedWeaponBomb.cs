@@ -236,8 +236,8 @@ public class UnifiedWeaponBomb : NetworkBehaviour, IPlayerWeapon
         bool canInput = AuthorityGuard.IsOffline || isOwned;
         if (canInput && !isDepleted && Input.GetKeyDown(throwKey))
         {
-            Debug.LogError($"[Bomb.Update] 좌클릭 감지. owner={owner?.name}, " +
-            $"ownerInputs={_ownerInputs != null}");
+            // Debug.LogError($"[Bomb.Update] 좌클릭 감지. owner={owner?.name}, " +
+            // $"ownerInputs={_ownerInputs != null}");
 
             _ownerInputs.punch = false;
             RequestThrow();

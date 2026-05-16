@@ -4757,6 +4757,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trailNames:
   - Weapon_Katana_01_Blade
+  - Axe_Weapon
+  - Bat_Weapon
+  - Dagger_Weapon
 --- !u!114 &7316770020201437962
 MonoBehaviour:
   m_ObjectHideFlags: 1

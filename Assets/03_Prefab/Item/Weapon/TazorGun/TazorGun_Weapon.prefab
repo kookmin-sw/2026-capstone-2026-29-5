@@ -604,9 +604,9 @@ MonoBehaviour:
   knockbackVerticalPower: 0
   knockbackInputLockDuration: -1
   knockbackFromOwner: 1
-  effectIndex: 0
-  hitEffectPrefab: {fileID: 0}
-  effectDuration: 2
+  effectIndex: 3
+  hitEffectPrefab: {fileID: 1221272536104276, guid: 9f07ac1dd3562434d84d1ca53bd1f936, type: 3}
+  effectDuration: 1
   audioSource: {fileID: 0}
   attackHitSounds: []
   attackHitVolume: 1

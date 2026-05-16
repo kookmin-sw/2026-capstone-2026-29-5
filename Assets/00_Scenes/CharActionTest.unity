@@ -3123,10 +3123,6 @@ PrefabInstance:
       propertyPath: sceneId
       value: 2459301703
       objectReference: {fileID: 0}
-    - target: {fileID: 5278848616009620587, guid: feb1b062780cf6a41adc2b8bdd3b16c9, type: 3}
-      propertyPath: redOverlay
-      value: 
-      objectReference: {fileID: 959362177}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

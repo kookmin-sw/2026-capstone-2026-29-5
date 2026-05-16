@@ -360,6 +360,7 @@ MonoBehaviour:
   - {fileID: 1295152798636446, guid: 7bc5cf6046eb9334fbe9d6990beae341, type: 3}
   - {fileID: 1386863584468592, guid: 870267e33195a014cb7a46b117e2f3ac, type: 3}
   - {fileID: 1106933244615982, guid: 65faa7584675c9a4d90f4ea0b229eb11, type: 3}
+  - {fileID: 1221272536104276, guid: 9f07ac1dd3562434d84d1ca53bd1f936, type: 3}
   effectDuration: 1
 --- !u!114 &340597318631594795
 MonoBehaviour:
