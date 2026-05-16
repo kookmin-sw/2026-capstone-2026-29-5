@@ -70,6 +70,11 @@ public class CharSelectUI : MonoBehaviour
     [Range(0f, 1f)]
     public float portraitAfterImageAlpha = 0.45f;
 
+    [Header("Portrait Switch Effect")]
+    public float portraitSwitchOffsetX = 180f; // 바깥 거리
+    public float portraitSwitchDuration = 0.12f; // 시간
+    public bool portraitSwitchFade = true;
+
 
     [Header("입력 쿨다운")]
     public float inputCooldown = 0.18f;
@@ -81,6 +86,10 @@ public class CharSelectUI : MonoBehaviour
     private int localPlayerIndex = -1;
     private bool isInitialized = false;
     private bool isNetworkReady = false;
+
+    private readonly Coroutine[] portraitSwitchRoutines = new Coroutine[2];
+    private readonly Vector2[] portraitBasePositions = new Vector2[2];
+    private bool portraitBasePositionCached = false;
 
     // ── 연출 중에는 입력 차단 플래그 ────────────────────────────
     private bool isCinematicPlaying = false;
@@ -252,16 +261,18 @@ public class CharSelectUI : MonoBehaviour
 
     // ── UI 업데이트 ───────────────────────────────────────────────
 
-    private void ApplyCharacterVisual(int playerIndex, int characterIndex)
+    private void ApplyCharacterVisual(int playerIndex, int characterIndex, int direction = 0)
     {
         if (characters == null || characterIndex < 0 || characterIndex >= characters.Length) return;
+
+        CachePortraitBasePositions(); // portrait 베이스 위치 저장해두기
 
         var data = characters[characterIndex];
         var portrait = playerIndex == 0 ? p1Portrait : p2Portrait;
         var nameImage = playerIndex == 0 ? p1NameImage : p2NameImage;
 
         if (portrait != null && data.portrait != null)
-            portrait.sprite = data.portrait;
+            PlayPortraitSwitchEffect(playerIndex, portrait, data.portrait, direction);
 
         if (nameImage != null)
         {
@@ -283,10 +294,15 @@ public class CharSelectUI : MonoBehaviour
             PlaySfx(cursorMoveClip, cursorMoveVolume);
         }
 
+        int previousIndex = lastCursorIndexes[playerIndex];
+        int direction = previousIndex >= 0 ? cursorIndex - previousIndex : 0;
+        direction = direction < 0 ? -1 : direction > 0 ? 1 : 0;
+
+
         lastCursorIndexes[playerIndex] = cursorIndex;
 
         if (!isLocked)
-            ApplyCharacterVisual(playerIndex, cursorIndex);
+            ApplyCharacterVisual(playerIndex, cursorIndex, direction);
     }
 
     public void UpdateSelection(int playerIndex, int selectedIndex)
@@ -314,12 +330,82 @@ public class CharSelectUI : MonoBehaviour
         lastSelectedIndexes[playerIndex] = selectedIndex;
     }
 
+    // 초기 portrait 위치 저장
+    private void CachePortraitBasePositions()
+    {
+        if (portraitBasePositionCached) return;
+
+        if (p1Portrait != null)
+            portraitBasePositions[0] = p1Portrait.rectTransform.anchoredPosition;
+
+        if (p2Portrait != null)
+            portraitBasePositions[1] = p2Portrait.rectTransform.anchoredPosition;
+
+        portraitBasePositionCached = true;
+    }
+
     private void PlayPortraitSelectEffect(int playerIndex, Image portrait)
     {
         if (portrait == null) return;
         if (portraitEffectRoutines[playerIndex] != null) return;
 
         portraitEffectRoutines[playerIndex] = StartCoroutine(PortraitSelectEffectRoutine(playerIndex, portrait));
+    }
+
+    // 캐릭터 스위치 이펙트 
+    private void PlayPortraitSwitchEffect(int playerIndex, Image portrait, Sprite nextSprite, int direction)
+    {
+        if (portrait == null || nextSprite == null) return;
+
+        if (portraitSwitchRoutines[playerIndex] != null)
+            StopCoroutine(portraitSwitchRoutines[playerIndex]);
+
+        portraitSwitchRoutines[playerIndex] =
+            StartCoroutine(PortraitSwitchRoutine(playerIndex, portrait, nextSprite, direction));
+    }
+
+    private IEnumerator PortraitSwitchRoutine(int playerIndex, Image portrait, Sprite nextSprite, int direction)
+    {
+        RectTransform rect = portrait.rectTransform;
+        Vector2 basePos = portraitBasePositions[playerIndex];
+
+        if (direction == 0)
+            direction = playerIndex == 0 ? -1 : 1;
+
+        float fromX = basePos.x + portraitSwitchOffsetX * direction;
+        Vector2 from = new Vector2(fromX, basePos.y);
+
+        portrait.sprite = nextSprite;
+        rect.anchoredPosition = from;
+
+        Color baseColor = portrait.color;
+        if (portraitSwitchFade)
+            portrait.color = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);
+
+        float duration = Mathf.Max(0.01f, portraitSwitchDuration);
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = 1f - Mathf.Pow(1f - t, 3f);
+
+            rect.anchoredPosition = Vector2.LerpUnclamped(from, basePos, eased);
+
+            if (portraitSwitchFade)
+            {
+                Color c = portrait.color;
+                c.a = Mathf.Lerp(0f, baseColor.a, eased);
+                portrait.color = c;
+            }
+
+            yield return null;
+        }
+
+        rect.anchoredPosition = basePos;
+        portrait.color = baseColor;
+        portraitSwitchRoutines[playerIndex] = null;
     }
 
     private IEnumerator PortraitSelectEffectRoutine(int playerIndex, Image portrait)

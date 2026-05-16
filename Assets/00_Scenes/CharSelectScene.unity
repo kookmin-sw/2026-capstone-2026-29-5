@@ -748,6 +748,9 @@ MonoBehaviour:
   portraitAfterImageScale: 1.14
   portraitAfterImageDuration: 0.28
   portraitAfterImageAlpha: 0.45
+  portraitSwitchOffsetX: 120
+  portraitSwitchDuration: 0.12
+  portraitSwitchFade: 1
   inputCooldown: 0.18
 --- !u!4 &410240694
 Transform:
@@ -1330,7 +1333,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 592543a260f226c4a9595ecd064cfa89, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -2001,7 +2004,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 56f4cf7697c37b548a77aa4b24c85414, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
