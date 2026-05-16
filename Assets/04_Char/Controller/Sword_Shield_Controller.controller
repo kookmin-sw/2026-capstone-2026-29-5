@@ -2853,7 +2853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &227830031132937611
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3028,7 +3028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &705075300777148735
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3296,7 +3296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &1489576626513373038
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3413,7 +3413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!206 &2006441832885606158
 BlendTree:
   m_ObjectHideFlags: 1
@@ -3614,7 +3614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &2832988815412304767
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -4680,7 +4680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!114 &6638510854911143545
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4736,7 +4736,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: Weapon_Sword
+  trailNames:
+  - Weapon_Sword
 --- !u!1101 &7372256340232541443
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -5153,7 +5154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &9081352912469936970
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

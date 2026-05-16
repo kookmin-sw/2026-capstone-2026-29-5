@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1102 &-8846157886267762614
 AnimatorState:
   serializedVersion: 6
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &-7750488344727668568
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -615,7 +615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &-6918705948636257154
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1041,19 +1041,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &-5447178806819492431
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trailName: 
 --- !u!1101 &-5340644368463628093
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3085,7 +3072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &1129208865170345029
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3645,7 +3632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &2879897151545263895
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -4610,7 +4597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1102 &6089587095309719544
 AnimatorState:
   serializedVersion: 6
@@ -4756,6 +4743,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63241b2a3bcbb384c9d9b0e7bc7b1d4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7216528092695569825
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trailNames:
+  - Weapon_Katana_01_Blade
 --- !u!114 &7316770020201437962
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4768,7 +4769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d912eafa575a1458d0278972e06864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailName: 
+  trailNames: []
 --- !u!1101 &7372256340232541443
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -5012,7 +5013,7 @@ AnimatorState:
   - {fileID: 3650138487903906602}
   - {fileID: 2387240318340291323}
   m_StateMachineBehaviours:
-  - {fileID: -5447178806819492431}
+  - {fileID: 7216528092695569825}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
